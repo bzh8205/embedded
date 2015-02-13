@@ -2,6 +2,7 @@
  * Holds the schedulers implemented
  */
 #include "Project1.h"
+#include "Scheduler.h"
 
 //TODO actually test these schedulers
 
@@ -48,4 +49,23 @@ unsigned int LST (Workload* workload) {
                 }
         }
         return lT;
+}
+
+/**
+ * \brief Takes the workload to pass to the given algorithm
+ * \param workload, holds tasks and task data in current implementation to 
+ * iterate through
+ * \param alg, the algorithm to use for scheduling
+ */
+unsigned int scheduleTask( Workload *workload, SCHED_ALG alg) {
+	//find which algorithm to use
+	switch (alg) {
+		case EARLIEST_DEADLINE:
+			return EDF(workload);
+		case LEAST_SLACK:
+			return LST(workload);
+		default:
+			printf("scheduleTask:: algorithm not implemented yet\n");
+			return -1;
+	}
 }

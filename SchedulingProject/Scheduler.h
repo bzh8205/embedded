@@ -7,6 +7,6 @@ typedef enum {
   LEAST_SLACK
 } SCHED_ALG;
 
-extern int scheduleTask( Workload *workload );
+unsigned int scheduleTask( Workload *workload );
 
 #endif /* Scheduler.h */
