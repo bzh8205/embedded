@@ -1,17 +1,19 @@
 /**
  * Measures used for task execution
  */
-#include <timer.h>
+#include <stdio.h>
+#include <time.h>
 #include "BurnUtility.h"
 
 /**
  * \brief burns cpu cycles for supposed time
  */
 void spin( int us ){
-	int i;
+	int i,sum;
 	unsigned int endSpin = (unsigned int) fudge*us*US_10_EXE;// 
 	for (i = 0; i< endSpin; i++) {
 		//TODO some math stuff, use for exe at 10us increments
+		sum += sum;
 	}
 }
 
@@ -30,7 +32,8 @@ void initSpinUtility(){
 	//clock
 	finish = clock();
 	actualT =(double)((finish-start)*1000/CLOCKS_PER_SEC);
-	fudge = actualT/10.0;  // fraction of recieved over expected
+	fudge = 10.0/actualT;  // fraction of recieved over expected
+	printf("Got:%f\nWant:10\nFudge:%f\n",actualT,fudge);
 }
 
 

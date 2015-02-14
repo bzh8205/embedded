@@ -1,6 +1,7 @@
 /**
  * Holds the schedulers implemented
  */
+#include <stdio.h>
 #include "Project1.h"
 #include "Scheduler.h"
 
