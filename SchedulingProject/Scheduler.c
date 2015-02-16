@@ -20,10 +20,10 @@ unsigned int EDF (Workload* workload) {
 	//find all next deadlines, assuming first thread indexed 0
 	for (i = 0; i < workload->task_num; i++) {
 		//compare deadline to earliest
-		if ( (workload->tasks[i]).next_deadline_us < earliest) {
+		if ( (workload->tasks[i])->next_deadline_us < earliest) {
 			//if deadline is earlier, update earliest and eT
-			earliest = (workload->tasks[i]).next_deadline_us;
-			eT=(workload->tasks[i]).id;
+			earliest = (workload->tasks[i])->next_deadline_us;
+			eT=(workload->tasks[i])->id;
 		}
 	}
 	return eT;
@@ -42,11 +42,11 @@ unsigned int LST (Workload* workload) {
 	int i; //workload iterator
 	for (i = 0; i < workload->task_num; i++) {
                 //calc slack
-		calSlack = (workload->tasks[i]).next_deadline_us - (workload->tasks[i]).last_finish_us;
+		calSlack = (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->last_finish_us;
                 if ( calSlack < lSlack) {
                         //if slack is less, update lSlack and the task id
                         lSlack = calSlack;
-                        lT=(workload->tasks[i]).id;
+                        lT=(workload->tasks[i])->id;
                 }
         }
         return lT;

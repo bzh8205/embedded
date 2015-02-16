@@ -19,13 +19,13 @@ typedef struct {
 
 typedef struct {
   int task_num;
-  Task *tasks;
+  Task ** tasks;
 //TODO  TaskThread *threads;
 } Workload;
 
 /**
  * \brief inits workload structure given some set of tasks and size 
  */
-int initWorkLoad(Workload* wl, unsigned int ** test, int testSize );
+int initWorkLoad(Workload* wl, unsigned int** test, int testSize );
 
 #endif /* Project1.h */
