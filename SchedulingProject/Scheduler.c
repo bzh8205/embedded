@@ -21,10 +21,20 @@ unsigned int EDF (Workload* workload) {
 	for (i = 0; i < workload->task_num; i++) {
 		//compare deadline to earliest
 		if ( (workload->tasks[i])->next_deadline_us < earliest) {
+			//check if task is ready
+//printf("Last time exe: %u\n",(workload->tasks[i])->last_finish_us);
+//printf("last deadline: %u\n",(workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us) ;
+			if ( ( (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us) <=
+				(workload->tasks[i])->last_finish_us) {
 			//if deadline is earlier, update earliest and eT
-			earliest = (workload->tasks[i])->next_deadline_us;
-			eT=(workload->tasks[i])->id;
+				earliest = (workload->tasks[i])->next_deadline_us;
+				eT=(workload->tasks[i])->id;
+			} // hadn't finished w/i the last period
 		}
+	}
+	//check for no ready tasks
+	if (earliest ==-1) {
+		return -1;
 	}
 	return eT;
 }
@@ -44,9 +54,13 @@ unsigned int LST (Workload* workload) {
                 //calc slack
 		calSlack = (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->last_finish_us;
                 if ( calSlack < lSlack) {
+			//is the task ready to run though?
+			 if ( ( (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us) <=
+                                (workload->tasks[i])->last_finish_us) {
                         //if slack is less, update lSlack and the task id
-                        lSlack = calSlack;
-                        lT=(workload->tasks[i])->id;
+                        	lSlack = calSlack;
+                        	lT=(workload->tasks[i])->id;
+			}
                 }
         }
         return lT;
