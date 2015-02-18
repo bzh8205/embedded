@@ -7,41 +7,45 @@
 #include "Project1.h"
 
 //example workload descriptor
-unsigned int test1[5][3] = {{1,7,7}, {2,5,5}, {1,8,8}, {1,10,10}, {2,16,16}};
+unsigned int test1[5][3] = { { 1, 7, 7 }, { 2, 5, 5 }, { 1, 8, 8 },
+    { 1, 10, 10 }, { 2, 16, 16 } };
 int test1Size = 5;
-
 
 int main(int argc, char *argv[]) {
   Workload wl;
-   int i;
-  fudge =1; //defaulting fudge variable before test adjustment
+  Stats stats;
+  int i;
+  fudge = 1; //defaulting fudge variable before test adjustment
   //TODOinitBurnUtility();
   initSpinUtility();
   //printf("Fudge: %f\n",fudge);
   //create workload struct from descriptor
 
-  if (!initWorkLoad(&wl,test1,test1Size) ) {
-	printf("Error initializing Workload struct\n");
+  if (!initWorkLoad(&wl, test1, test1Size)) {
+    printf("Error initializing Workload struct\n");
   }
-//check
-	for (i=0;i<test1Size;i++) {
-		printf("id:%d C:%d P:%d D:%d LF:%d ND:%d\n", (wl.tasks[i])->id,
-			(wl.tasks[i])->exec_time_us , (wl.tasks[i])->period_time_us , 
-			(wl.tasks[i])->deadline_us ,
-			(wl.tasks[i])->last_finish_us, (wl.tasks[i])->next_deadline_us );
-	}
-  
-	//create threads
-  
-  //runTest( Workload, configuration ) -> returns [event data]
-  runTest(&wl,EARLIEST_DEADLINE);
-  //runTest(&wl,LEAST_SLACK);
+
+  if (!initStats(&wl, &stats)) {
+    printf("Error initializing Stats struct\n");
+  }
+
+  //check
+  for (i = 0; i < test1Size; i++) {
+    printf("id:%d C:%d P:%d D:%d LF:%d ND:%d\n", (wl.tasks[i])->id,
+        (wl.tasks[i])->exec_time_us, (wl.tasks[i])->period_time_us,
+        (wl.tasks[i])->deadline_us, (wl.tasks[i])->last_finish_us,
+        (wl.tasks[i])->next_deadline_us);
+  }
+
+  runTest(&wl, EARLIEST_DEADLINE, &stats);
+  //runTest(&wl, LEAST_SLACK, &stats);
 
 
-  //createStats( [event data] ) -> returns [stats struct]
+  //free stats
+  destroyStats(&stats, test1Size);
 
-	//free workload
-	destroyWorkLoad(&wl,test1Size);
+  //free workload
+  destroyWorkLoad(&wl, test1Size);
   return 0;
 }
 
@@ -52,91 +56,154 @@ int main(int argc, char *argv[]) {
  * \param test a list of tasks, with there C,P, and D
  * \param testSize number of tasks in test list 
  * \return returns whether init was successful
- */ 
-int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize ){
-	int i;
-	Task** tptr = malloc(sizeof(Task*)*testSize);//create task ptr array
-	for (i=0;i<testSize; i++) {
-		tptr[i] = malloc(sizeof(Task)); // create task structure
-//printf("created struct %d in task array\n",i);
-		tptr[i]->id =i; 
-//printf("exe time:%d\n", test[i][0]); //TODO fix test infrasture referencing
-		tptr[i]->exec_time_us = test[i][0];
-		tptr[i]->period_time_us = test[i][1];
-		tptr[i]->deadline_us = test[i][2];
-		tptr[i]->last_finish_us = 0; //default
-		tptr[i]->next_deadline_us = test[i][2]; //default
-//printf("done w/ struct %d\n", i);
-	}
-	//add to struct
-	wl->task_num = testSize;
-	wl->tasks = tptr;
+ */
+int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
+  int i;
+  Task** tptr = malloc(sizeof(Task*) * testSize);//create task ptr array
+  for (i = 0; i < testSize; i++) {
+    tptr[i] = malloc(sizeof(Task)); // create task structure
+    //printf("created struct %d in task array\n",i);
+    tptr[i]->id = i;
+    //printf("exe time:%d\n", test[i][0]); //TODO fix test infrasture referencing
+    tptr[i]->exec_time_us = test[i][0];
+    tptr[i]->period_time_us = test[i][1];
+    tptr[i]->deadline_us = test[i][2];
+    tptr[i]->last_finish_us = 0; //default
+    tptr[i]->next_deadline_us = test[i][2]; //default
+    //printf("done w/ struct %d\n", i);
+  }
+  //add to struct
+  wl->task_num = testSize;
+  wl->tasks = tptr;
 
-	return 1; 
+  return 1;
+}
+
+int initStats(Workload* wl, Stats* stats) {
+  int i;
+  int task_num = wl->task_num;
+  stats->start_cycles = clock;
+  stats->end_cycles = 0;
+  stats->idle_cycles = 0;
+  stats->exec_cycles = 0;
+  stats->total_deadlines_missed;
+
+  TaskStats ** ts_ptr = malloc(sizeof(TaskStats*) * task_num);
+  for (i = 0; i < task_num; i++) {
+    ts_ptr[i] = malloc(sizeof(TaskStats));
+    ts_ptr[i]->exec_cycles = 0;
+    ts_ptr[i]->exec_number = 0;
+    ts_ptr[i]->deadlines_missed = 0;
+  }
+  stats->task_stats = ts_ptr;
+
+  return 1;
+}
+
+//Updates idle time if taskId = -1, updates a task stats otherwise.
+void updateStats(int taskId, Workload* wl, int startCycles, int endCycles,
+    Stats* stats) {
+  if (taskId = -1 && (startCycles > stats->start_cycles)) {
+    stats->idle_cycles = (endCycles - startCycles);
+  } else {
+    stats->exec_cycles = endCycles - startCycles;
+    (stats->task_stats[taskId])->exec_cycles += (endCycles - startCycles);
+    (stats->task_stats[taskId])->exec_number += 1;
+    //TODO: check if deadline was missed.
+  }
+}
+
+void logEvent( EVENT_TYPE et, int info ){
+  //TODO
+}
+
+void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
+  int id;
+  clock_t pre_exec = 0;
+  clock_t post_exec = 0;
+  int sched_ctr = 0;
+  //while time < configuration.test_duration
+  while (clock() < startTime + 200) {
+    sched_ctr++;
+    logEvent( SCHED_START, sched_ctr );
+    id = scheduleTask(wl, alg);
+    if (id != -1) {
+      logEvent( TASK_SCHED, id );
+      //LOG: start task spin
+      pre_exec = clock();
+      updateStats(-1, wl, post_exec, pre_exec, stats);
+      //printf("starting task %d at: %lu\n",id,pre_exe);
+      logEvent( TASK_EXEC_START , id );
+      spin((wl->tasks[id])->exec_time_us);
+      logEvent( TASK_EXEC_END , id );
+      //LOG: end task spin
+      post_exec = clock();
+      updateStats(id, wl, pre_exec, post_exec, stats);
+      (wl->tasks[id])->last_finish_us = post_exec;
+      //TODO this should just be += deadline
+      (wl->tasks[id])->next_deadline_us = pre_exec
+          + (wl->tasks[id])->deadline_us; //deadline marks from start exe
+      //bad for wiggle spins
+
+      //printf("ending task %d at: %lu\n", id, post_exe);
+      //printf("took %lu\n", post_exe - pre_exe);
+    } else {
+      logEvent( NOTHING_SCHED, 0 );
+    }
+  } //done test
 }
 
 //TODO: params and returns
-void runTest(Workload* wl,SCHED_ALG alg) {
-	unsigned int id; 
-	clock_t startTime,pre_exe,post_exe,endTime;
+void runTest(Workload* wl, SCHED_ALG alg, Stats* stats) {
+  clock_t startTime, endTime;
   //save start time
-	startTime = clock();
-	printf("~~~~~~~~~~Starting Sim at %lu~~~~~~~~~~~~\n\n",startTime);
-  //while time < configuration.test_duration
-	while (clock() < startTime+200) {
-		id = scheduleTask(wl,alg);
-		if (id != -1) {
-  //  log start running id.
-			pre_exe = clock();
-		//printf("starting task %d at: %lu\n",id,pre_exe);
-  //  MsgSend [to id]
-			spin((wl->tasks[id])->exec_time_us);	
-  //  log end running id 
-			post_exe = clock();
-			(wl->tasks[id])->last_finish_us = post_exe;
-			(wl->tasks[id])->next_deadline_us= pre_exe+(wl->tasks[id])->deadline_us; //deadline marks from start exe
-			//bad for wiggle spins
-			
-			printf("ending task %d at: %lu\n",id,post_exe);
-			printf("took %lu\n",post_exe - pre_exe);
-  //  update workload.tasks[id]
-		}else {
-			printf("No tasks are ready\n");
-		}
-	} //done test
-	endTime=clock();
-	printf("\n\n~~~~~~~~~Done with simulation at %lu~~~~~~~\n",endTime);
-   return;
+  startTime = clock();
+  logEvent( START_TEST, 0 );
+  stats->start_cycles = startTime;
+  printf("~~~~~~~~~~Starting Sim at %lu~~~~~~~~~~~~\n\n", startTime);
+  _runTest( startTime, wl, alg, stats );
+  endTime = clock();
+  logEvent( END_TEST, 0 );
+  stats->end_cycles = endTime;
+  printf("\n\n~~~~~~~~~Done with simulation at %lu~~~~~~~\n", endTime);
+  return;
 }
 
-
-int destroyWorkLoad(Workload* wl,int testSize ) {
-	int i;
-        for (i=0;i<testSize; i++) {
-		free(wl->tasks[i]);
-        }
-	free(wl->tasks);
-	return 1; //could be void, I guess
+int destroyWorkLoad(Workload* wl, int testSize) {
+  int i;
+  for (i = 0; i < testSize; i++) {
+    free(wl->tasks[i]);
+  }
+  free(wl->tasks);
+  return 1; //could be void, I guess
 }
 
+int destroyStats(Stats* stats, int testSize){
+  int i;
+  for (i = 0; i < testSize; i++) {
+    free(stats->task_stats[i]);
+  }
+  free(stats->task_stats);
+  return 1;
+}
 
-void TaskThread(void *arguments){
-  TaskArguments *args = (TaskArguments *)arguments;
-  int threadId = args->thread_id; 
-  int spinTime = args->exec_time_us; 
-  
+void TaskThread(void *arguments) {
+  TaskArguments *args = (TaskArguments *) arguments;
+  int threadId = args->thread_id;
+  int spinTime = args->exec_time_us;
+
   //MsgRecieve
-  spin( spinTime );
+  spin(spinTime);
   //MsgReply
   return;
 }
 
-pthread_t *initTaskThread( int threadId, int execTimeUs ){
+pthread_t *initTaskThread(int threadId, int execTimeUs) {
   TaskArguments *args;
   args = malloc(sizeof(TaskArguments));
   args->thread_id = threadId;
   args->exec_time_us = execTimeUs;
- //TODO ? return initThread( 0, (void *)TaskThread, (void *)args);
-  return 0; 
+  //TODO ? return initThread( 0, (void *)TaskThread, (void *)args);
+  return 0;
 }
 
