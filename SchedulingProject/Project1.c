@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "BurnUtility.h"
+#include "UserTracing.h"
 #include "Scheduler.h"
 #include "Project1.h"
 
@@ -18,6 +19,7 @@ int main(int argc, char *argv[]) {
   fudge = 1; //defaulting fudge variable before test adjustment
   //TODOinitBurnUtility();
   initSpinUtility();
+  initUserTracing( argv[0] );
   //printf("Fudge: %f\n",fudge);
   //create workload struct from descriptor
 
