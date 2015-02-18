@@ -68,7 +68,6 @@ int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
     tptr[i] = malloc(sizeof(Task)); // create task structure
     //printf("created struct %d in task array\n",i);
     tptr[i]->id = i;
-    //printf("exe time:%d\n", test[i][0]); //TODO fix test infrasture referencing
     tptr[i]->exec_time_us = test[i][0];
     tptr[i]->period_time_us = test[i][1];
     tptr[i]->deadline_us = test[i][2];
@@ -131,6 +130,16 @@ void printTaskInfo(Task* t) {
 }
 #endif
 
+void updateDeadlines(time_t lastClock, Workload* wl) {
+	int id;
+	for (id=0 ; id< wl->task_num; id++) {
+		if (lastClock > (wl->tasks[id])->next_deadline_us) { //if deadline passed
+			(wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
+		}
+	}
+	return;
+}
+
 void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   int id;
   clock_t pre_exec = 0;
@@ -141,13 +150,10 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
     sched_ctr++;
     logEvent( SCHED_START, sched_ctr );
     id = scheduleTask(wl, alg);
-#ifdef ALYSSA_TESTING
-    printTaskInfo( (wl->tasks[id]) ); 
-#endif
     if (id != -1) {
       logEvent( TASK_SCHED, id );
       //LOG: start task spin
-      pre_exec = clock();
+      pre_exec = clock(); //TODO by this time first deadline has passed!
 #ifndef ALYSSA_TESTING
       updateStats(-1, wl, post_exec, pre_exec, stats);
 #endif
@@ -157,18 +163,23 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       logEvent( TASK_EXEC_END , id );
       //LOG: end task spin
       post_exec = clock();
+#ifdef ALYSSA_TESTING
       updateStats(id, wl, pre_exec, post_exec, stats);
+#endif
       //update workload
       (wl->tasks[id])->last_finish_us = post_exec-startTime;
       (wl->tasks[id])->last_exec_us = pre_exec-startTime;
       (wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
+#ifdef ALYSSA_TESTING
+      printTaskInfo( (wl->tasks[id]) );
+#endif
       //bad for wiggle spins
-	
       //printf("ending task %d at: %lu\n", id, post_exe);
       //printf("took %lu\n", post_exe - pre_exe);
     } else {
 #ifdef ALYSSA_TESTING
       printf("Nothing Scheduled\n");
+      updateDeadlines(clock(), wl);
 #endif
       logEvent( NOTHING_SCHED, 0 );
     }
