@@ -19,7 +19,9 @@ int main(int argc, char *argv[]) {
   fudge = 1; //defaulting fudge variable before test adjustment
   //TODOinitBurnUtility();
   initSpinUtility();
+#ifndef ALYSSA_TESTING
   initUserTracing( argv[0] );
+#endif
   //printf("Fudge: %f\n",fudge);
   //create workload struct from descriptor
 
@@ -33,10 +35,10 @@ int main(int argc, char *argv[]) {
 
   //check
   for (i = 0; i < test1Size; i++) {
-    printf("id:%d C:%d P:%d D:%d LF:%d ND:%d\n", (wl.tasks[i])->id,
+    printf("id:%d C:%d P:%d D:%d LF:%d ND:%d LE:%d\n", (wl.tasks[i])->id,
         (wl.tasks[i])->exec_time_us, (wl.tasks[i])->period_time_us,
         (wl.tasks[i])->deadline_us, (wl.tasks[i])->last_finish_us,
-        (wl.tasks[i])->next_deadline_us);
+        (wl.tasks[i])->next_deadline_us, (wl.tasks[i])->last_exec_us);
   }
 
   runTest(&wl, EARLIEST_DEADLINE, &stats);
@@ -72,6 +74,7 @@ int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
     tptr[i]->deadline_us = test[i][2];
     tptr[i]->last_finish_us = 0; //default
     tptr[i]->next_deadline_us = test[i][2]; //default
+    tptr[i]->last_exec_us = 0; //default
     //printf("done w/ struct %d\n", i);
   }
   //add to struct
@@ -84,11 +87,11 @@ int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
 int initStats(Workload* wl, Stats* stats) {
   int i;
   int task_num = wl->task_num;
-  stats->start_cycles = clock;
+  stats->start_cycles = clock; //TODO
   stats->end_cycles = 0;
   stats->idle_cycles = 0;
   stats->exec_cycles = 0;
-  stats->total_deadlines_missed;
+  stats->total_deadlines_missed; //TODO
 
   TaskStats ** ts_ptr = malloc(sizeof(TaskStats*) * task_num);
   for (i = 0; i < task_num; i++) {
@@ -105,7 +108,7 @@ int initStats(Workload* wl, Stats* stats) {
 //Updates idle time if taskId = -1, updates a task stats otherwise.
 void updateStats(int taskId, Workload* wl, int startCycles, int endCycles,
     Stats* stats) {
-  if (taskId = -1 && (startCycles > stats->start_cycles)) {
+  if (taskId == -1 && (startCycles > stats->start_cycles)) {
     stats->idle_cycles = (endCycles - startCycles);
   } else {
     stats->exec_cycles = endCycles - startCycles;
@@ -119,6 +122,15 @@ void logEvent( EVENT_TYPE et, int info ){
   //TODO
 }
 
+#ifdef ALYSSA_TESTING
+void printTaskInfo(Task* t) {
+         printf("id:%d C:%d P:%d D:%d LE:%d LF:%d ND:%d\n", t->id,
+        t->exec_time_us , t->period_time_us ,
+        t->deadline_us , t->last_exec_us,
+        t->last_finish_us, t->next_deadline_us );
+}
+#endif
+
 void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   int id;
   clock_t pre_exec = 0;
@@ -129,11 +141,16 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
     sched_ctr++;
     logEvent( SCHED_START, sched_ctr );
     id = scheduleTask(wl, alg);
+#ifdef ALYSSA_TESTING
+    printTaskInfo( (wl->tasks[id]) ); 
+#endif
     if (id != -1) {
       logEvent( TASK_SCHED, id );
       //LOG: start task spin
       pre_exec = clock();
+#ifndef ALYSSA_TESTING
       updateStats(-1, wl, post_exec, pre_exec, stats);
+#endif
       //printf("starting task %d at: %lu\n",id,pre_exe);
       logEvent( TASK_EXEC_START , id );
       spin((wl->tasks[id])->exec_time_us);
@@ -141,15 +158,18 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       //LOG: end task spin
       post_exec = clock();
       updateStats(id, wl, pre_exec, post_exec, stats);
-      (wl->tasks[id])->last_finish_us = post_exec;
-      //TODO this should just be += deadline
-      (wl->tasks[id])->next_deadline_us = pre_exec
-          + (wl->tasks[id])->deadline_us; //deadline marks from start exe
+      //update workload
+      (wl->tasks[id])->last_finish_us = post_exec-startTime;
+      (wl->tasks[id])->last_exec_us = pre_exec-startTime;
+      (wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
       //bad for wiggle spins
-
+	
       //printf("ending task %d at: %lu\n", id, post_exe);
       //printf("took %lu\n", post_exe - pre_exe);
     } else {
+#ifdef ALYSSA_TESTING
+      printf("Nothing Scheduled\n");
+#endif
       logEvent( NOTHING_SCHED, 0 );
     }
   } //done test

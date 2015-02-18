@@ -30,6 +30,7 @@ typedef struct {
   unsigned int deadline_us;
   unsigned int last_finish_us;
   unsigned int next_deadline_us;
+  unsigned int last_exec_us;
 } Task;
 
 typedef struct {
