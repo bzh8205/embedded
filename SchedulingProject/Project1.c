@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <math.h>
 #include "BurnUtility.h"
 #include "UserTracing.h"
 #include "Scheduler.h"
@@ -130,14 +131,19 @@ void printTaskInfo(Task* t) {
 }
 #endif
 
+/**
+ * \brief Updates the next deadline if deadlines were missed and not automatically
+ * updated after execution
+ */
 void updateDeadlines(time_t lastClock, Workload* wl) {
-	int id;
-	for (id=0 ; id< wl->task_num; id++) {
-		if (lastClock > (wl->tasks[id])->next_deadline_us) { //if deadline passed
-			(wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
-		}
-	}
-	return;
+   int id;
+   for (id=0 ; id< wl->task_num; id++) {
+      if (lastClock > (wl->tasks[id])->next_deadline_us) { //if deadline passed
+         (wl->tasks[id])->next_deadline_us =
+		ceil (lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
+      }
+   }
+   return;
 }
 
 void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
@@ -147,6 +153,8 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   int sched_ctr = 0;
   //while time < configuration.test_duration
   while (clock() < startTime + 200) {
+    updateDeadlines(clock()-startTime, wl); 
+   //TODO not updating fast enough, times between execution too costly
     sched_ctr++;
     logEvent( SCHED_START, sched_ctr );
     id = scheduleTask(wl, alg);
@@ -171,6 +179,8 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       (wl->tasks[id])->last_exec_us = pre_exec-startTime;
       (wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
 #ifdef ALYSSA_TESTING
+      //printf("%d\n",id);
+      printf("%lu\n",clock()-startTime);
       printTaskInfo( (wl->tasks[id]) );
 #endif
       //bad for wiggle spins
@@ -179,7 +189,7 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
     } else {
 #ifdef ALYSSA_TESTING
       printf("Nothing Scheduled\n");
-      updateDeadlines(clock(), wl);
+      //updateDeadlines(clock(), wl);
 #endif
       logEvent( NOTHING_SCHED, 0 );
     }
