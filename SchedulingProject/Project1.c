@@ -9,9 +9,20 @@
 #include "Project1.h"
 
 //example workload descriptor
+#ifdef TEST3
+unsigned int test1[4][3] = { {1,4,4}, {2,5,5}, {1,8,8}, {1,10,10} }; 
+int test1Size = 4;
+#elif TEST2
+//lazy test switching
+unsigned int test1[3][3]= { {1,3,3}, {2,5,5}, {1,10,10} };
+int test1Size = 3;
+#else 
+//example workload descriptor
 unsigned int test1[5][3] = { { 1, 7, 7 }, { 2, 5, 5 }, { 1, 8, 8 },
     { 1, 10, 10 }, { 2, 16, 16 } };
 int test1Size = 5;
+#endif
+
 
 int main(int argc, char *argv[]) {
   Workload wl;
@@ -151,9 +162,11 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   clock_t pre_exec = 0;
   clock_t post_exec = 0;
   int sched_ctr = 0;
+  clock_t tick=0;
   //while time < configuration.test_duration
-  while (clock() < startTime + 200) {
-    updateDeadlines(clock()-startTime, wl); 
+  tick = clock();
+  while (tick< startTime + 200) {
+    updateDeadlines(tick-startTime, wl); 
    //TODO not updating fast enough, times between execution too costly
     sched_ctr++;
     logEvent( SCHED_START, sched_ctr );
@@ -179,8 +192,8 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       (wl->tasks[id])->last_exec_us = pre_exec-startTime;
       (wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
 #ifdef ALYSSA_TESTING
-      //printf("%d\n",id);
-      printf("%lu\n",clock()-startTime);
+      printf("[%d]\n",id);
+      printf("%lu\n",post_exec-startTime);
       printTaskInfo( (wl->tasks[id]) );
 #endif
       //bad for wiggle spins
@@ -193,6 +206,7 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
 #endif
       logEvent( NOTHING_SCHED, 0 );
     }
+  tick = clock(); //next tick
   } //done test
 }
 
