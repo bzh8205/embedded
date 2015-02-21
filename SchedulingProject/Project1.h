@@ -48,6 +48,11 @@ void logEvent( EVENT_TYPE et, int info );
 int destroyWorkLoad(Workload* wl, int testSize );
 
 /**
+ * \brief displays some of the data captured in stats data structure
+ */
+void displayStats(Stats* stats, int testSize);
+
+/**
  * \brief destroys frees the stats structure given the number of tasks
  * it was initialized with
  */

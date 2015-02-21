@@ -55,8 +55,10 @@ int main(int argc, char *argv[]) {
 
   runTest(&wl, EARLIEST_DEADLINE, &stats);
   //runTest(&wl, LEAST_SLACK, &stats);
-
-
+#ifdef ALYSSA_TESTING
+  //print out the stats
+  displayStats(&stats,test1Size);
+#endif
   //free stats
   destroyStats(&stats, test1Size);
 
@@ -98,11 +100,11 @@ int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
 int initStats(Workload* wl, Stats* stats) {
   int i;
   int task_num = wl->task_num;
-  stats->start_cycles = clock; //TODO
+  stats->start_cycles = 0;//clock; //TODO
   stats->end_cycles = 0;
   stats->idle_cycles = 0;
   stats->exec_cycles = 0;
-  stats->total_deadlines_missed; //TODO
+  stats->total_deadlines_missed=0;//; //TODO
 
   TaskStats ** ts_ptr = malloc(sizeof(TaskStats*) * task_num);
   for (i = 0; i < task_num; i++) {
@@ -121,12 +123,14 @@ void updateStats(int taskId, Workload* wl, int startCycles, int endCycles,
     Stats* stats) {
   if (taskId == -1 && (startCycles > stats->start_cycles)) {
     stats->idle_cycles = (endCycles - startCycles);
-  } else {
+  } else if (taskId != -1){ //checking for non-neg index, led to segfault
     stats->exec_cycles = endCycles - startCycles;
     (stats->task_stats[taskId])->exec_cycles += (endCycles - startCycles);
     (stats->task_stats[taskId])->exec_number += 1;
     //TODO: check if deadline was missed.
-  }
+  } else {
+    //TODO?
+  }  
 }
 
 void logEvent( EVENT_TYPE et, int info ){
@@ -175,24 +179,24 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       logEvent( TASK_SCHED, id );
       //LOG: start task spin
       pre_exec = clock(); //TODO by this time first deadline has passed!
-#ifndef ALYSSA_TESTING
+//#ifndef ALYSSA_TESTING
       updateStats(-1, wl, post_exec, pre_exec, stats);
-#endif
+//#endif
       //printf("starting task %d at: %lu\n",id,pre_exe);
       logEvent( TASK_EXEC_START , id );
       spin((wl->tasks[id])->exec_time_us);
       logEvent( TASK_EXEC_END , id );
       //LOG: end task spin
       post_exec = clock();
-#ifdef ALYSSA_TESTING
+//#ifdef ALYSSA_TESTING
       updateStats(id, wl, pre_exec, post_exec, stats);
-#endif
+//#endif
       //update workload
       (wl->tasks[id])->last_finish_us = post_exec-startTime;
       (wl->tasks[id])->last_exec_us = pre_exec-startTime;
       (wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
 #ifdef ALYSSA_TESTING
-      printf("[%d]\n",id);
+      //printf("[%d]\n",id);
       printf("%lu\n",post_exec-startTime);
       printTaskInfo( (wl->tasks[id]) );
 #endif
@@ -233,6 +237,18 @@ int destroyWorkLoad(Workload* wl, int testSize) {
   }
   free(wl->tasks);
   return 1; //could be void, I guess
+}
+
+void displayStats(Stats* stats, int testSize){
+  int i;
+  for (i = 0; i < testSize; i++) {
+    printf("[%d]\ndeadlines missed:%d\nexecuted cycles:%lu\nexecution number:%d\n",
+		i,(stats->task_stats[i])->deadlines_missed,
+		(stats->task_stats[i])->exec_cycles,
+		(stats->task_stats[i])->exec_number);
+  }
+  printf("Overall deadlines missed:%d\n",stats->total_deadlines_missed);
+  return;
 }
 
 int destroyStats(Stats* stats, int testSize){
