@@ -53,6 +53,11 @@ int destroyWorkLoad(Workload* wl, int testSize );
 void displayStats(Stats* stats, int testSize);
 
 /**
+ * \brief displays the Task struck info of the task ptr
+ */
+void printTaskInfo(Task* t);
+
+/**
  * \brief destroys frees the stats structure given the number of tasks
  * it was initialized with
  */
