@@ -25,7 +25,7 @@ unsigned int EDF (Workload* workload) {
 			//check if task is ready
 			approxLastDeadline= (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us;
 			//printf("[%u] LD:%u >= LE:%u\n",i, approxLastDeadline, (workload->tasks[i])->last_exec_us);
-			if ( approxLastDeadline > (workload->tasks[i])->last_exec_us) {
+			if ( approxLastDeadline >= (workload->tasks[i])->last_exec_us) { //TODO account for on deadline exe
 			//if deadline is earlier, then task hasn't ran this period 
 				earliest = (workload->tasks[i])->next_deadline_us;
 				eT=(workload->tasks[i])->id;

@@ -82,11 +82,11 @@ int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
     tptr[i] = malloc(sizeof(Task)); // create task structure
     //printf("created struct %d in task array\n",i);
     tptr[i]->id = i;
-    tptr[i]->exec_time_us = test[i][0] *10;
-    tptr[i]->period_time_us = test[i][1] *10;
-    tptr[i]->deadline_us = test[i][2] *10;//TODO remove x10
+    tptr[i]->exec_time_us = test[i][0] *100;
+    tptr[i]->period_time_us = test[i][1] *100;
+    tptr[i]->deadline_us = test[i][2] *100;//TODO remove x10
     tptr[i]->last_finish_us = 0; //default
-    tptr[i]->next_deadline_us = test[i][2]; //default
+    tptr[i]->next_deadline_us = test[i][2]*100; //default TODO remove x10
     tptr[i]->last_exec_us = 0; //default
     //printf("done w/ struct %d\n", i);
   }
@@ -163,17 +163,20 @@ void printTaskInfo(Task* t) {
  * \brief Updates the next deadline if deadlines were missed and not automatically
  * updated after execution
  */
-void updateDeadlines(time_t lastClock, Workload* wl,Stats * stats) {
+void updateDeadlines(clock_t lastClock, Workload* wl,Stats * stats) {
    int id;
    for (id=0 ; id< wl->task_num; id++) {
       if (lastClock > (wl->tasks[id])->next_deadline_us) { //if deadline passed
+//printf("ceil: %f of %lu/%u\n",ceil (lastClock/(wl->tasks[id])->deadline_us), lastClock, (wl->tasks[id])->deadline_us);
          (wl->tasks[id])->next_deadline_us =
 		ceil (lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
 		//update the deadline missed
-//printf("UD[%d]:%d\n",id, (wl->tasks[id])->next_deadline_us);
+printf("UD[%d]:%d\n",id, (wl->tasks[id])->next_deadline_us);
 		(stats->task_stats[id])->deadlines_missed +=1;
 		stats->total_deadlines_missed +=1;
-      }
+      } else {
+  //     printf("%lu < %u\n",lastClock, (wl->tasks[id])->deadline_us);
+     }
    }
    return;
 }
@@ -186,7 +189,7 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   clock_t tick=0;
   //while time < configuration.test_duration
   tick = clock();
-  while (tick< startTime + 200*10) {//TODO remove x10
+  while (tick< startTime + 200*100) {//TODO remove x10
     updateDeadlines(tick-startTime, wl,stats); 
    //TODO not updating fast enough, times between execution too costly
     sched_ctr++;
@@ -215,18 +218,19 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
 #ifdef ALYSSA_TESTING
      // printf("[%d]\n",id);
         printf("%lu\n",tick-startTime);
-   //   printTaskInfo( (wl->tasks[id]) );
+        printTaskInfo( (wl->tasks[id]) );
 #endif
       //bad for wiggle spins
       //printf("took %lu\n", post_exe - pre_exe);
     } else {
 #ifdef ALYSSA_TESTING
-      //printf("Nothing Scheduled\n");
+      printf("Nothing Scheduled\n");
       //updateDeadlines(clock(), wl);
+printf("%lu\n",tick-startTime);
 #endif
       logEvent( NOTHING_SCHED, 0 );
     }
-  tick = clock(); //next tick
+    tick = clock(); //next tick
   } //done test
 }
 
