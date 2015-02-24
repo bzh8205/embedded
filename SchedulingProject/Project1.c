@@ -166,17 +166,18 @@ void printTaskInfo(Task* t) {
 void updateDeadlines(clock_t lastClock, Workload* wl,Stats * stats) {
    int id;
    for (id=0 ; id< wl->task_num; id++) {
-      if (lastClock > (wl->tasks[id])->next_deadline_us) { //if deadline passed
-//printf("ceil: %f of %lu/%u\n",ceil (lastClock/(wl->tasks[id])->deadline_us), lastClock, (wl->tasks[id])->deadline_us);
-         (wl->tasks[id])->next_deadline_us =
-		ceil (lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
+	//TODO, error with comparing this inequality
+      if ( lastClock > (unsigned long) (wl->tasks[id])->next_deadline_us ) { //if DL passed 
+//printf("ceil: %f of %lu/%u=%f\n", ceil( (double) lastClock/(wl->tasks[id])->deadline_us), lastClock, (wl->tasks[id])->deadline_us
+//		,(double) lastClock/(wl->tasks[id])->deadline_us);
+         (wl->tasks[id])->next_deadline_us = (unsigned int)
+		ceil ( (double)lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
+
 		//update the deadline missed
 printf("UD[%d]:%d\n",id, (wl->tasks[id])->next_deadline_us);
 		(stats->task_stats[id])->deadlines_missed +=1;
 		stats->total_deadlines_missed +=1;
-      } else {
-  //     printf("%lu < %u\n",lastClock, (wl->tasks[id])->deadline_us);
-     }
+      } 
    }
    return;
 }
