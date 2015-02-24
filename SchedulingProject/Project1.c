@@ -8,6 +8,8 @@
 #include "Scheduler.h"
 #include "Project1.h"
 
+#define FACTOR 100	//factor used for easy changing of task workload weights
+
 //example workload descriptor
 #ifdef TEST3
 unsigned int test1[4][3] = { {1,4,4}, {2,5,5}, {1,8,8}, {1,10,10} }; 
@@ -53,8 +55,8 @@ int main(int argc, char *argv[]) {
         (wl.tasks[i])->next_deadline_us, (wl.tasks[i])->last_exec_us);
   }
 
-  runTest(&wl, EARLIEST_DEADLINE, &stats);
-  //runTest(&wl, LEAST_SLACK, &stats);
+  //runTest(&wl, EARLIEST_DEADLINE, &stats);
+  runTest(&wl, LEAST_SLACK, &stats);
 #ifdef ALYSSA_TESTING
   //print out the stats
   displayStats(&stats,test1Size);
@@ -82,11 +84,12 @@ int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
     tptr[i] = malloc(sizeof(Task)); // create task structure
     //printf("created struct %d in task array\n",i);
     tptr[i]->id = i;
-    tptr[i]->exec_time_us = test[i][0] *100;
-    tptr[i]->period_time_us = test[i][1] *100;
-    tptr[i]->deadline_us = test[i][2] *100;//TODO remove x10
+    //TODO remove FACTOR factors
+    tptr[i]->exec_time_us = test[i][0] *FACTOR;
+    tptr[i]->period_time_us = test[i][1] *FACTOR;
+    tptr[i]->deadline_us = test[i][2] *FACTOR;
     tptr[i]->last_finish_us = 0; //default
-    tptr[i]->next_deadline_us = test[i][2]*100; //default TODO remove x10
+    tptr[i]->next_deadline_us = test[i][2]*FACTOR; //default TODO remove x10
     tptr[i]->last_exec_us = 0; //default
     //printf("done w/ struct %d\n", i);
   }
@@ -174,7 +177,7 @@ void updateDeadlines(clock_t lastClock, Workload* wl,Stats * stats) {
 		ceil ( (double)lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
 
 		//update the deadline missed
-printf("UD[%d]:%d\n",id, (wl->tasks[id])->next_deadline_us);
+//printf("UD[%d]:%d\n",id, (wl->tasks[id])->next_deadline_us);
 		(stats->task_stats[id])->deadlines_missed +=1;
 		stats->total_deadlines_missed +=1;
       } 
@@ -190,7 +193,7 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   clock_t tick=0;
   //while time < configuration.test_duration
   tick = clock();
-  while (tick< startTime + 200*100) {//TODO remove x10
+  while (tick< startTime + 200*FACTOR) {//TODO remove FACTOR
     updateDeadlines(tick-startTime, wl,stats); 
    //TODO not updating fast enough, times between execution too costly
     sched_ctr++;

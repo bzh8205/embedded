@@ -52,14 +52,16 @@ unsigned int LST (Workload* workload) {
 	unsigned int lSlack = -1; // least slack time, hopefully max unsigned int
 	unsigned int lT=0; //task w/ least slack time
 	unsigned int calSlack; //holds the calculated slack time for i task
+	unsigned int approxLastDeadline;
 	int i; //workload iterator
 	for (i = 0; i < workload->task_num; i++) {
                 //calc slack
 		calSlack = (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->last_finish_us;
-                if ( calSlack < lSlack) {
+		approxLastDeadline= (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us;
+		if ( approxLastDeadline >= (workload->tasks[i])->last_finish_us) { //hadn't executed this period
+//printf("[%d]slack: %u, ND:%u LE:%u\n",i,calSlack,(workload->tasks[i])->next_deadline_us ,(workload->tasks[i])->last_finish_us);
 			//is the task ready to run though?
-			 if ( ( (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us) >=
-                                (workload->tasks[i])->last_finish_us) { //hadn't executed this period
+                	if ( calSlack < lSlack) {
                         //if slack is less, update lSlack and the task id
                         	lSlack = calSlack;
                         	lT=(workload->tasks[i])->id;
