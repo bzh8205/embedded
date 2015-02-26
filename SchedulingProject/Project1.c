@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
         (wl.tasks[i])->next_deadline_us, (wl.tasks[i])->last_exec_us);
   }
 
-  runTest(&wl, EARLIEST_DEADLINE, &stats);
-  //runTest(&wl, LEAST_SLACK, &stats);
+  //runTest(&wl, EARLIEST_DEADLINE, &stats);
+  runTest(&wl, LEAST_SLACK, &stats);
 #ifdef ALYSSA_TESTING
   //print out the stats
   displayStats(&stats,test1Size);
@@ -198,7 +198,7 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
    //TODO not updating fast enough, times between execution too costly
     sched_ctr++;
     logEvent( SCHED_START, sched_ctr );
-    id = scheduleTask(wl, alg);
+    id = scheduleTask(wl, alg,tick-startTime);//TODO adding current time
     if (id != -1) {
       logEvent( TASK_SCHED, id );
       //LOG: start task spin

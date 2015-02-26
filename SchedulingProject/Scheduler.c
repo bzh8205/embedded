@@ -48,7 +48,7 @@ unsigned int EDF (Workload* workload) {
  * \param workload, holds tasks and task data in current implementation to 
  * iterate through
  */
-unsigned int LST (Workload* workload) {
+unsigned int LST (Workload* workload, clock_t curTime) {
 	unsigned int lSlack = -1; // least slack time, hopefully max unsigned int
 	unsigned int lT=0; //task w/ least slack time
 	unsigned int calSlack; //holds the calculated slack time for i task
@@ -56,11 +56,16 @@ unsigned int LST (Workload* workload) {
 	int i; //workload iterator
 	for (i = 0; i < workload->task_num; i++) {
                 //calc slack
-		calSlack = (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->last_finish_us;
+		//calSlack = (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->last_finish_us;
+                //TODO pass in current time???
 		approxLastDeadline= (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us;
 		if ( approxLastDeadline >= (workload->tasks[i])->last_finish_us) { //hadn't executed this period
 //printf("[%d]slack: %u, ND:%u LE:%u\n",i,calSlack,(workload->tasks[i])->next_deadline_us ,(workload->tasks[i])->last_finish_us);
 			//is the task ready to run though?
+			calSlack = ((clock_t)( workload->tasks[i])->next_deadline_us -curTime) - 
+					(clock_t) (workload->tasks[i])->exec_time_us;
+                //printf("[%d] slack:(%lu-%lu)-%lu=%u\n",i, ( (clock_t)( workload->tasks[i])->next_deadline_us),curTime,
+		//	(clock_t) (workload->tasks[i])->exec_time_us, calSlack  );
                 	if ( calSlack < lSlack) {
                         //if slack is less, update lSlack and the task id
                         	lSlack = calSlack;
@@ -77,13 +82,13 @@ unsigned int LST (Workload* workload) {
  * iterate through
  * \param alg, the algorithm to use for scheduling
  */
-unsigned int scheduleTask( Workload *workload, SCHED_ALG alg) {
+unsigned int scheduleTask( Workload *workload, SCHED_ALG alg, clock_t curTime) {
 	//find which algorithm to use
 	switch (alg) {
 		case EARLIEST_DEADLINE:
 			return EDF(workload);
 		case LEAST_SLACK:
-			return LST(workload);
+			return LST(workload, curTime);
 		default:
 			printf("scheduleTask:: algorithm not implemented yet\n");
 			return -1;
