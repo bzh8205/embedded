@@ -6,7 +6,9 @@
 #include "BurnUtility.h"
 
 /**
- * \brief burns cpu cycles for supposed time
+ * \brief burns cpu cycles for a configured 1ms
+ * precon: run initSpinUtility to configure fudge before calling spin
+ * for task execution burn
  */
 void spin( int us ){
 	int i,sum;
@@ -18,7 +20,7 @@ void spin( int us ){
 }
 
 /**
- * Sets the fudge factor for spin funct
+ * Sets the fudge factor for spin of 1ms
  */
 void initSpinUtility(){
 	int i;
