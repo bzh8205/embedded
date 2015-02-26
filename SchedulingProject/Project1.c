@@ -208,7 +208,11 @@ void _runTest(time_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
 //#endif
       //printf("starting task %d at: %lu\n",id,pre_exe);
       logEvent( TASK_EXEC_START , id );
+<<<<<<< HEAD
       spin((wl->tasks[id])->exec_time_us); //pass in ms
+=======
+      spin((wl->tasks[id])->exec_time_us); //TODO change naming pass in ms
+>>>>>>> master
       logEvent( TASK_EXEC_END , id );
       //LOG: end task spin
       post_exec = clock();
