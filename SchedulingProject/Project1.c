@@ -55,8 +55,9 @@ int main(int argc, char *argv[]) {
         (wl.tasks[i])->next_deadline_us, (wl.tasks[i])->last_exec_us);
   }
 
-  //runTest(&wl, EARLIEST_DEADLINE, &stats);
-  runTest(&wl, LEAST_SLACK, &stats);
+  runTest(&wl, EARLIEST_DEADLINE, &stats);
+ // runTest(&wl, LEAST_SLACK, &stats);
+  //runTest(&wl, RATE_MONOTONIC, &stats);
 #ifdef ALYSSA_TESTING
   //print out the stats
   displayStats(&stats,test1Size);
