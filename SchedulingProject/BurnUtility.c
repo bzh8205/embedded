@@ -38,8 +38,9 @@ void initSpinUtility(){
 }
 
 void spinTest(){
-  int test_num = 1000;
-  printf("Running %d burns:\n",1000);
+  int test_num = 250;
+  int target = 100;
+  printf("Running %d burns:\n",test_num);
   int max = -1;
   int min = -1;
   long total = 0;
@@ -51,7 +52,7 @@ void spinTest(){
   int iter;
   for(iter = 0; iter < test_num; iter++){
     clock_gettime(CLOCK_REALTIME, &start);
-    spin( 100 * 1000 );
+    spin( target * 1000 );
     clock_gettime(CLOCK_REALTIME, &end);
     long diff = (timespec2nsec(&end) - timespec2nsec(&start))/1000000;\
     if (diff > max || max == -1){
@@ -60,12 +61,12 @@ void spinTest(){
     if (diff < min || min == -1){
       min = diff;
     }
-    if (diff > 200){
+    if (diff > target * 1.25 || diff < target * .75 ){
       peaks++;
     }
     total += diff;
   }
-  printf("\tmax %d, min %d, avg %f, peaks %d\n", max, min, total/1000.0, peaks);
+  printf("\tmax %d, min %d, avg %f, peaks %d\n", max, min, total/1.0/test_num, peaks);
 }
 
 
