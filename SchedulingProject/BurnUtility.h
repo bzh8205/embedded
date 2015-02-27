@@ -7,10 +7,12 @@ double fudge; //factor used for fudging spin
 
 //performs a calibration procedure so spin works as expected
 //across processors
-extern void initSpinUtility();
+void initSpinUtility();
 
 //burns cpu time for int microseconds.
 //must be multiple of 10us.
-extern void spin( int us );
+void spin( int us );
+
+void spinTest();
 
 #endif /* BurnUtility.h */

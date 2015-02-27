@@ -87,22 +87,20 @@ void initThreadRunner(Workload *workload){
   chid = ChannelCreate (0);
   printf("Channel created with id %d\n", chid);
 
-  int rcvids[numThreads];
+  rcvids_ptr = malloc(sizeof(int)*numThreads);
   int iter; int message;
   for( iter = 0 ; iter < numThreads ; iter++ ){
     printf("Creating thread for task id %d, with exec_time %d\n",
         (workload->tasks[iter])->id, (workload->tasks[iter])->exec_time_us);
     initTaskThread( chid, iter, (workload->tasks[iter])->exec_time_us );
-    rcvids[iter] = MsgReceive(chid, &message, sizeof(message), NULL );
-    printf("Received rcvid %d\n", rcvids[iter]);
+    rcvids_ptr[iter] = MsgReceive(chid, &message, sizeof(message), NULL );
+    printf("Received rcvid %d\n", rcvids_ptr[iter]);
   }
-
-  rcvids_ptr = rcvids;
 }
 
 void runThread(int num){
   int message;
-  printf("Running thread num %d with rcvid %d", num, rcvids_ptr[num]);
+  printf("Running thread num %d with rcvid %d\n", num, rcvids_ptr[num]);
   MsgReply( rcvids_ptr[num], EOK, &RUN_REPLY, sizeof(RUN_REPLY) );
   rcvids_ptr[num] = MsgReceive(chid, &message, sizeof(message), NULL);
 }

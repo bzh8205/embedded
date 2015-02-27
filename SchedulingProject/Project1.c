@@ -3,19 +3,16 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <math.h>
+#include <sys/neutrino.h>
 #include "BurnUtility.h"
 #include "ThreadRunner.h"
 #include "UserTracing.h"
 #include "Scheduler.h"
-
 #include "Project1.h"
-#include <sys/neutrino.h>
-#define GETTIME_CONV 1000000L //scale gettime helper to ms
+
 //util variables
 unsigned char is_time_init = 0;
 struct timespec init_time;
-
-#define FACTOR 100	//factor used for easy changing of task workload weights
 
 //example workload descriptor
 #ifdef TEST3
@@ -38,6 +35,7 @@ int main(int argc, char *argv[]) {
   int i;
   fudge = 1; //defaulting fudge variable before test adjustment
   initSpinUtility();
+  spinTest();
 #ifndef ALYSSA_TESTING
   initUserTracing(argv[0]);
 #endif
@@ -73,8 +71,12 @@ int main(int argc, char *argv[]) {
 
   //free workload
   destroyWorkLoad(&wl, test1Size);
+
+  spinTest();
   return 0;
 }
+
+
 //TODO added new time funct
 //On first call: sets up seconds to be calculated from first call time,
 //rather than 1970. Else: returns time from first call.
@@ -136,16 +138,16 @@ int initWorkLoad(Workload* wl, unsigned int test[][3], int testSize) {
 int initStats(Workload* wl, Stats* stats) {
   int i;
   int task_num = wl->task_num;
-  stats->start_cycles = 0;//clock; //TODO
-  stats->end_cycles = 0;
-  stats->idle_cycles = 0;
-  stats->exec_cycles = 0;
+  stats->start_time_ms = 0;//clock; //TODO
+  stats->end_time_ms = 0;
+  stats->idle_time_ms = 0;
+  stats->exec_time_ms = 0;
   stats->total_deadlines_missed = 0;//; //TODO
 
   TaskStats ** ts_ptr = malloc(sizeof(TaskStats*) * task_num);
   for (i = 0; i < task_num; i++) {
     ts_ptr[i] = malloc(sizeof(TaskStats));
-    ts_ptr[i]->exec_cycles = 0;
+    ts_ptr[i]->exec_time_ms = 0;
     ts_ptr[i]->exec_number = 0;
     ts_ptr[i]->deadlines_missed = 0;
   }
@@ -155,57 +157,53 @@ int initStats(Workload* wl, Stats* stats) {
 }
 
 //Updates idle time if taskId = -1, updates a task stats otherwise.
-void updateStats(int taskId, Workload* wl, int startCycles, int endCycles,
+void updateStats(int taskId, Workload* wl, int startms, int endms,
     Stats* stats) {
-  int i;//iterator
-  unsigned int l_dl; //last deadline calculation
-  if (taskId == -1 && (startCycles > stats->start_cycles)) {
-    stats->idle_cycles = (endCycles - startCycles);
+  if (taskId == -1 && (startms > stats->start_time_ms)) {
+    stats->idle_time_ms = (endms - startms);
   } else if (taskId != -1) { //checking for non-neg index, led to segfault
-    stats->exec_cycles = endCycles - startCycles;
-    (stats->task_stats[taskId])->exec_cycles += (endCycles - startCycles);
+    stats->exec_time_ms += (endms - startms);
+    (stats->task_stats[taskId])->exec_time_ms += (endms - startms);
     (stats->task_stats[taskId])->exec_number += 1;
 
     //TODO: check if deadline was missed.
   } else {
     //TODO?
   }
-  /*
-   for (i =0;i< wl->task_num;i++) {
-   l_dl = (wl->tasks[i])->next_deadline_us- (wl->tasks[i])->deadline_us;
-   if (  ( (wl->tasks[i])->last_exec_us < l_dl) &&
-   (endCycles > (wl->tasks[i])->next_deadline_us) ) {
-   //didn't execut within last period and passed its deadline
-   //TODO may update for same deadline multiple times, might require a ran flag
-   (stats->task_stats[i])->deadlines_missed +=1;
-   stats->total_deadlines_missed +=1;
-   }
-   }
-   */
 }
 
 void logEvent(EVENT_TYPE et, int info) {
+
+  char s[50];
+  sprintf(s,"%d\t%lu", info, getTime());
   switch(et){
   case SCHED_START:
     printf("SHCEDULING A TASK info %d time %lu\n", info, getTime());
+    userTraceEvent(0,s);
     break;
   case NOTHING_SCHED:
     printf("NO TASK SCHEDULED info %d time %lu\n", info, getTime());
+    userTraceEvent(1,s);
     break;
   case TASK_SCHED:
     printf("TASK SCHEDULED info %d time %lu\n", info, getTime());
+    userTraceEvent(2,s);
     break;
   case TASK_EXEC_START:
     printf("TASK EXECUTION START info %d time %lu\n", info, getTime());
+    userTraceEvent(3,s);
     break;
   case TASK_EXEC_END:
     printf("TASK EXECUTION END info %d time %lu\n", info, getTime());
+    userTraceEvent(4,s);
     break;
   case START_TEST:
     printf("TEST START info %d time %lu\n", info, getTime());
+    userTraceEvent(5,s);
     break;
   case END_TEST:
     printf("TEST END info %d time %lu\n", info, getTime());
+    userTraceEvent(6,s);
     break;
   }
 }
@@ -225,8 +223,8 @@ void updateDeadlines(long lastClock, Workload* wl,Stats * stats) {
    for (id=0 ; id< wl->task_num; id++) {
 	//TODO, error with comparing this inequality
       if ( lastClock > (unsigned long) (wl->tasks[id])->next_deadline_us ) { //if DL passed 
-        printf("ceil: %f of %lu/%u=%f\n", ceil( (double) lastClock/(wl->tasks[id])->deadline_us),
-            lastClock, (wl->tasks[id])->deadline_us,(double) lastClock/(wl->tasks[id])->deadline_us);
+//        printf("ceil: %f of %lu/%u=%f\n", ceil( (double) lastClock/(wl->tasks[id])->deadline_us),
+//            lastClock, (wl->tasks[id])->deadline_us,(double) lastClock/(wl->tasks[id])->deadline_us);
         (wl->tasks[id])->next_deadline_us = (unsigned int)
             ceil ( (double)lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
 
@@ -249,7 +247,7 @@ void _runTest(clock_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   long tick=0;
   //while time < configuration.test_duration
   tick = getTime();
-  while (tick< startTime + 200*FACTOR) {//TODO remove FACTOR
+  while (tick < startTime + 200*FACTOR) {//TODO remove FACTOR
     updateDeadlines(tick-startTime, wl,stats);
    //TODO not updating fast enough, times between execution too costly
     sched_ctr++;
@@ -268,7 +266,7 @@ void _runTest(clock_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       //spin((wl->tasks[id])->exec_time_us*1000);
       logEvent(TASK_EXEC_END, id);
       //LOG: end task spin
-      post_exec = clock();
+      post_exec = getTime();
       //#ifdef ALYSSA_TESTING
       updateStats(id, wl, pre_exec, post_exec, stats);
       //#endif
@@ -301,12 +299,12 @@ void runTest(Workload* wl, SCHED_ALG alg, Stats* stats) {
   //save start time
   startTime = getTime();
   logEvent( START_TEST, 0 );
-  stats->start_cycles = startTime;
+  stats->start_time_ms = startTime;
   printf("~~~~~~~~~~Starting Sim at %lu~~~~~~~~~~~~\n\n", startTime);
   _runTest( startTime, wl, alg, stats );
   endTime = getTime();
   logEvent( END_TEST, 0 );
-  stats->end_cycles = endTime;
+  stats->end_time_ms = endTime;
   printf("\n\n~~~~~~~~~Done with simulation at %lu~~~~~~~\n", endTime);
   return;
 }
@@ -326,7 +324,7 @@ void displayStats(Stats* stats, int testSize) {
     printf(
         "[%d]\ndeadlines missed:%d\nexecuted cycles:%lu\nexecution number:%d\n",
         i, (stats->task_stats[i])->deadlines_missed,
-        (stats->task_stats[i])->exec_cycles,
+        (stats->task_stats[i])->exec_time_ms,
         (stats->task_stats[i])->exec_number);
   }
   printf("\tOverall deadlines missed:%d\n", stats->total_deadlines_missed);

@@ -4,6 +4,10 @@
 #include "Workload.h" //need for enum SCHED_ALG
 
 #define NS_CLOCK_SPEED 10000 //10us 
+#define FACTOR 100  //factor used for easy changing of task workload weights
+#define RUNTIME_MS 100
+#define RUNTIME (RUNTIME_MS*FACTOR)
+#define GETTIME_CONV 1000000L //scale gettime helper to ms
 
 //TODO new time func
 long getTime();
