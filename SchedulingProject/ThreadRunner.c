@@ -51,14 +51,16 @@ void TaskThread(void *arguments) {
   }
 
   while (1){
+    printf("Thread id %d waiting on server reply\n", threadId);
     int reply = MsgSend(coid, &threadId, sizeof(threadId), &rmsg, sizeof(rmsg));
+    printf("Thread id %d recieved a reply\n", threadId);
     if ( reply == -1 ){
       fprintf (stderr, "Error during MsgSend\n");
       perror (NULL);
       exit (EXIT_FAILURE);
     } else if ( rmsg == 0 ){
       printf("Spin for %d\n", spinTime);
-      spin(spinTime);
+      spin(spinTime*1000);
     } else {
       break;
     }
@@ -88,10 +90,11 @@ void initThreadRunner(Workload *workload){
   int rcvids[numThreads];
   int iter; int message;
   for( iter = 0 ; iter < numThreads ; iter++ ){
-    printf("Creating thread for task id %d, with exec_time %d",
+    printf("Creating thread for task id %d, with exec_time %d\n",
         (workload->tasks[iter])->id, (workload->tasks[iter])->exec_time_us);
     initTaskThread( chid, iter, (workload->tasks[iter])->exec_time_us );
     rcvids[iter] = MsgReceive(chid, &message, sizeof(message), NULL );
+    printf("Received rcvid %d\n", rcvids[iter]);
   }
 
   rcvids_ptr = rcvids;
@@ -99,6 +102,7 @@ void initThreadRunner(Workload *workload){
 
 void runThread(int num){
   int message;
+  printf("Running thread num %d with rcvid %d", num, rcvids_ptr[num]);
   MsgReply( rcvids_ptr[num], EOK, &RUN_REPLY, sizeof(RUN_REPLY) );
   rcvids_ptr[num] = MsgReceive(chid, &message, sizeof(message), NULL);
 }

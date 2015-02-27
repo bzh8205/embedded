@@ -185,7 +185,29 @@ void updateStats(int taskId, Workload* wl, int startCycles, int endCycles,
 }
 
 void logEvent(EVENT_TYPE et, int info) {
-  //TODO
+  switch(et){
+  case SCHED_START:
+    printf("SHCEDULING A TASK info %d time %lu\n", info, getTime());
+    break;
+  case NOTHING_SCHED:
+    printf("NO TASK SCHEDULED info %d time %lu\n", info, getTime());
+    break;
+  case TASK_SCHED:
+    printf("TASK SCHEDULED info %d time %lu\n", info, getTime());
+    break;
+  case TASK_EXEC_START:
+    printf("TASK EXECUTION START info %d time %lu\n", info, getTime());
+    break;
+  case TASK_EXEC_END:
+    printf("TASK EXECUTION END info %d time %lu\n", info, getTime());
+    break;
+  case START_TEST:
+    printf("TEST START info %d time %lu\n", info, getTime());
+    break;
+  case END_TEST:
+    printf("TEST END info %d time %lu\n", info, getTime());
+    break;
+  }
 }
 
 void printTaskInfo(Task* t) {
@@ -203,10 +225,10 @@ void updateDeadlines(long lastClock, Workload* wl,Stats * stats) {
    for (id=0 ; id< wl->task_num; id++) {
 	//TODO, error with comparing this inequality
       if ( lastClock > (unsigned long) (wl->tasks[id])->next_deadline_us ) { //if DL passed 
-//printf("ceil: %f of %lu/%u=%f\n", ceil( (double) lastClock/(wl->tasks[id])->deadline_us), lastClock, (wl->tasks[id])->deadline_us
-//		,(double) lastClock/(wl->tasks[id])->deadline_us);
-         (wl->tasks[id])->next_deadline_us = (unsigned int)
-		ceil ( (double)lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
+        printf("ceil: %f of %lu/%u=%f\n", ceil( (double) lastClock/(wl->tasks[id])->deadline_us),
+            lastClock, (wl->tasks[id])->deadline_us,(double) lastClock/(wl->tasks[id])->deadline_us);
+        (wl->tasks[id])->next_deadline_us = (unsigned int)
+            ceil ( (double)lastClock/(wl->tasks[id])->deadline_us) * (wl->tasks[id])->deadline_us;
 
 
       //update the deadline missed
@@ -243,6 +265,7 @@ void _runTest(clock_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       //printf("starting task %d at: %lu\n",id,pre_exe);
       logEvent(TASK_EXEC_START, id);
       runThread(id);
+      //spin((wl->tasks[id])->exec_time_us*1000);
       logEvent(TASK_EXEC_END, id);
       //LOG: end task spin
       post_exec = clock();

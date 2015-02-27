@@ -23,18 +23,20 @@ void spin( int us ){
  */
 void initSpinUtility(){
 	int i;
-	long start,finish;
 	double actualT;
 	//clock OR use getTime
-	start = getTime();
+	struct timespec start;
+	struct timespec end;
+	clock_gettime(CLOCK_REALTIME, &start);
 	//test for 10ms spin
 	spin (100000); // 100ms / 10us = 10000
 	//clock
-	finish = getTime();
+	clock_gettime(CLOCK_REALTIME, &end);
 	//actualT =(double)((finish)*1000/CLOCKS_PER_SEC);
 	//fudge = 1000.0/actualT;  // fraction of recieved over expected
-	fudge = 100.0/finish;
-	printf("Got:%lu\nWant:100\nFudge:%f\n",finish,fudge);
+	long runtime = (timespec2nsec(&end) - timespec2nsec(&start))/1000000;
+	fudge = 100.0/runtime;
+	printf("Got:%lu\nWant:100\nFudge:%f\n",runtime,fudge);
 }
 
 
