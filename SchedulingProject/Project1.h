@@ -5,6 +5,8 @@
 
 #define NS_CLOCK_SPEED 10000 //10us 
 
+//TODO new time func
+long getTime();
 
 /**
  * \brief inits workload structure given some set of tasks and size 

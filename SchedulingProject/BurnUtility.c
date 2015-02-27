@@ -4,11 +4,10 @@
 #include <stdio.h>
 #include <time.h>
 #include "BurnUtility.h"
+#include "Project1.h"	//adding new
 
 /**
- * \brief burns cpu cycles for a configured 1ms
- * precon: run initSpinUtility to configure fudge before calling spin
- * for task execution burn
+ * \brief burns cpu cycles for supposed time
  */
 void spin( int us ){
 	int i,sum;
@@ -20,21 +19,22 @@ void spin( int us ){
 }
 
 /**
- * Sets the fudge factor for spin of 1ms
+ * Sets the fudge factor for spin funct
  */
 void initSpinUtility(){
 	int i;
-	clock_t start,finish;
+	long start,finish;
 	double actualT;
 	//clock OR use getTime
-	start = clock();
+	start = getTime();
 	//test for 10ms spin
-	spin (10000); // 10ms / 10us = 1000
+	spin (100000); // 100ms / 10us = 10000
 	//clock
-	finish = clock();
-	actualT =(double)((finish-start)*1000/CLOCKS_PER_SEC);
-	fudge = 10.0/actualT;  // fraction of recieved over expected
-	printf("Got:%f\nWant:10\nFudge:%f\n",actualT,fudge);
+	finish = getTime();
+	//actualT =(double)((finish)*1000/CLOCKS_PER_SEC);
+	//fudge = 1000.0/actualT;  // fraction of recieved over expected
+	fudge = 100.0/finish;
+	printf("Got:%lu\nWant:100\nFudge:%f\n",finish,fudge);
 }
 
 
