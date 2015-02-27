@@ -6,6 +6,7 @@
 #define WORKLOAD_H_
 
 #include <time.h>
+#include <sys/dispatch.h>
 
 typedef enum {
   RATE_MONOTONIC,
@@ -34,6 +35,7 @@ typedef struct {
 } Task;
 
 typedef struct {
+  unsigned int ch_id;
   unsigned int thread_id;
   unsigned int exec_time_us;
 } TaskArguments;
@@ -43,7 +45,6 @@ typedef struct {
   Task ** tasks;
 //TODO  TaskThread *threads;
 } Workload;
-
 
 typedef struct {
   time_t exec_cycles;
