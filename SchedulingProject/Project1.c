@@ -24,11 +24,11 @@
 unsigned char is_time_init = 0;
 struct timespec init_time;
 
-//example workload descriptor
+/*~~~~~~~~ Task Workload Tests~~~~~~~~~~~~~~~~*/
 #ifdef TEST3
 unsigned int test1[4][3] = { {1,4,4}, {2,5,5}, {1,8,8}, {1,10,10}};
 int test1Size = 4;
-#elif TEST2
+#elif defined(TEST2)
 //lazy test switching
 unsigned int test1[3][3]= { {1,3,3}, {2,5,5}, {1,10,10}};
 int test1Size = 3;
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
   //Select Scheduling algorithm to benchmark
 #ifdef EDF_TEST
   runTest(&wl, EARLIEST_DEADLINE, &stats);
-#elif LST_TEST
+#elif defined(LST_TEST)
   runTest(&wl, LEAST_SLACK, &stats);
 #else
   runTest(&wl, LEAST_SLACK, &stats);
