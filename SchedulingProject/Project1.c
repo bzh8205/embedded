@@ -16,6 +16,7 @@
 //#define TEST2			//running 2nd task set
 //#define TEST3			//running 3rd task set
 //#define TEST4			//tests unschedulable task set
+//#define TEST5			// tests for none scheduling of idle time
 				//default 1st task set
 //#define EDF_TEST		//running test using EDF scheduler
 //#define LST_TEST		//running test using LST scheduler
@@ -36,6 +37,9 @@ int test1Size = 3;
 #elif defined(TEST4)
 unsigned int test1[2][3]= { {2,5,5}, {4,5,5}};
 int test1Size = 2;
+#elif defined(TEST5)
+unsigned int test1[1][3]= { {1,5,5}};
+int test1Size = 1;
 #else 
 //example workload descriptor
 unsigned int test1[5][3] = { { 1, 7, 7 }, { 2, 5, 5 }, { 1, 8, 8 },
@@ -80,7 +84,7 @@ int main(int argc, char *argv[]) {
 #elif defined(LST_TEST)
   runTest(&wl, LEAST_SLACK, &stats);
 #else
-  runTest(&wl, LEAST_SLACK, &stats);
+  runTest(&wl, RATE_MONOTONIC, &stats);
 #endif
 //#ifdef ALYSSA_TESTING
   //print out the stats

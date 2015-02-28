@@ -81,6 +81,9 @@ unsigned int LST (Workload* workload, clock_t curTime) {
 			}
                 }
         }
+	if (lSlack==-1) {
+                return -1;
+        }
         return lT;
 }
 
