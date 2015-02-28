@@ -27,77 +27,89 @@ unsigned char is_time_init = 0;
 struct timespec init_time;
 
 /*~~~~~~~~ Task Workload Tests~~~~~~~~~~~~~~~~*/
-#ifdef TEST3
-unsigned int test1[4][3] = { {1,4,4}, {2,5,5}, {1,8,8}, {1,10,10}};
-int test1Size = 4;
-#elif defined(TEST2)
-//lazy test switching
-unsigned int test1[3][3]= { {1,3,3}, {2,5,5}, {1,10,10}};
-int test1Size = 3;
-#elif defined(TEST4)
-unsigned int test1[2][3]= { {2,5,5}, {4,5,5}};
-int test1Size = 2;
-#elif defined(TEST5)
-unsigned int test1[1][3]= { {1,5,5}};
-int test1Size = 1;
-#else 
+
 //example workload descriptor
 unsigned int test1[5][3] = { { 1, 7, 7 }, { 2, 5, 5 }, { 1, 8, 8 },
     { 1, 10, 10 }, { 2, 16, 16 } };
 int test1Size = 5;
-#endif
+//lazy test switching
+unsigned int test2[3][3]= { {1,3,3}, {2,5,5}, {1,10,10}};
+int test2Size = 3;
+unsigned int test3[4][3] = { {1,4,4}, {2,5,5}, {1,8,8}, {1,10,10}};
+int test3Size = 4;
+unsigned int test4[2][3]= { {2,5,5}, {4,5,5}};
+int test4Size = 2;
+unsigned int test5[1][3]= { {1,5,5}};
+int test5Size = 1;
+
 
 int main(int argc, char *argv[]) {
-  Workload wl;
-  Stats stats;
-  int i;
-  fudge = 1; //defaulting fudge variable before test adjustment
-  initSpinUtility();
-  spinTest();
-#ifndef ALYSSA_TESTING
-  initUserTracing(argv[0]);
-#endif
-  //printf("Fudge: %f\n",fudge);
-  //create workload struct from descriptor
+  SchedulerTest(argv[0],RATE_MONOTONIC,test1,test1Size);
+  SchedulerTest(argv[0],RATE_MONOTONIC,test2,test2Size);
+  SchedulerTest(argv[0],RATE_MONOTONIC,test3,test3Size);
+  SchedulerTest(argv[0],RATE_MONOTONIC,test4,test4Size);
+  SchedulerTest(argv[0],RATE_MONOTONIC,test5,test5Size);
 
-  if (!initWorkLoad(&wl, test1, test1Size)) {
-    printf("Error initializing Workload struct\n");
-  }
+  SchedulerTest(argv[0],LEAST_SLACK,test1,test1Size);
+  SchedulerTest(argv[0],LEAST_SLACK,test2,test2Size);
+  SchedulerTest(argv[0],LEAST_SLACK,test3,test3Size);
+  SchedulerTest(argv[0],LEAST_SLACK,test4,test4Size);
+  SchedulerTest(argv[0],LEAST_SLACK,test5,test5Size);
 
-  initThreadRunner(&wl);
+  SchedulerTest(argv[0],EARLIEST_DEADLINE,test1,test1Size);
+  SchedulerTest(argv[0],EARLIEST_DEADLINE,test2,test2Size);
+  SchedulerTest(argv[0],EARLIEST_DEADLINE,test3,test3Size);
+  SchedulerTest(argv[0],EARLIEST_DEADLINE,test4,test4Size);
+  SchedulerTest(argv[0],EARLIEST_DEADLINE,test5,test5Size);
 
-  if (!initStats(&wl, &stats)) {
-    printf("Error initializing Stats struct\n");
-  }
 
-  //check
-  for (i = 0; i < test1Size; i++) {
-    printf("id:%d C:%d P:%d D:%d LF:%d ND:%d LE:%d\n", (wl.tasks[i])->id,
-        (wl.tasks[i])->exec_time_us, (wl.tasks[i])->period_time_us,
-        (wl.tasks[i])->deadline_us, (wl.tasks[i])->last_finish_us,
-        (wl.tasks[i])->next_deadline_us, (wl.tasks[i])->last_exec_us);
-  }
-
-  //Select Scheduling algorithm to benchmark
-#ifdef EDF_TEST
-  runTest(&wl, EARLIEST_DEADLINE, &stats);
-#elif defined(LST_TEST)
-  runTest(&wl, LEAST_SLACK, &stats);
-#else
-  runTest(&wl, RATE_MONOTONIC, &stats);
-#endif
-//#ifdef ALYSSA_TESTING
-  //print out the stats
-  displayStats(&stats,test1Size);
-//#endif
-  //free stats
-  destroyStats(&stats, test1Size);
-
-  //free workload
-  destroyWorkLoad(&wl, test1Size);
-
-  spinTest();
   return 0;
+}
+
+void SchedulerTest(const char * programName, SCHED_ALG alg, unsigned int test[][3], int testSize) {
+  Workload wl;
+    Stats stats;
+    int i;
+    fudge = 1; //defaulting fudge variable before test adjustment
+    initSpinUtility();
+    spinTest();
+  #ifndef ALYSSA_TESTING
+    initUserTracing(programName);
+  #endif
+    //printf("Fudge: %f\n",fudge);
+    //create workload struct from descriptor
+
+    if (!initWorkLoad(&wl, test1, testSize)) {
+      printf("Error initializing Workload struct\n");
+    }
+
+    initThreadRunner(&wl);
+
+    if (!initStats(&wl, &stats)) {
+      printf("Error initializing Stats struct\n");
+    }
+
+    //check
+    for (i = 0; i < test1Size; i++) {
+      printf("id:%d C:%d P:%d D:%d LF:%d ND:%d LE:%d\n", (wl.tasks[i])->id,
+          (wl.tasks[i])->exec_time_us, (wl.tasks[i])->period_time_us,
+          (wl.tasks[i])->deadline_us, (wl.tasks[i])->last_finish_us,
+          (wl.tasks[i])->next_deadline_us, (wl.tasks[i])->last_exec_us);
+    }
+
+    //Select Scheduling algorithm to benchmark
+    runTest(&wl, alg, &stats);
+  //#ifdef ALYSSA_TESTING
+    //print out the stats
+    displayStats(&stats,test1Size);
+  //#endif
+    //free stats
+    destroyStats(&stats, test1Size);
+
+    //free workload
+    destroyWorkLoad(&wl, test1Size);
+
+    spinTest();
 }
 
 

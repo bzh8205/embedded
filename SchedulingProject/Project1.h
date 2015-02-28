@@ -9,6 +9,10 @@
 #define RUNTIME (RUNTIME_TICKS*FACTOR)
 #define GETTIME_CONV 1000000L //scale gettime helper to ms
 
+//runs entire test for Algorithm and test set
+void SchedulerTest(const char * programName, SCHED_ALG alg,
+      unsigned int test[][3], int testSize);
+
 //TODO new time func
 long getTime();
 
