@@ -107,6 +107,30 @@ long getTime(){
 	return result;
 }
 
+long getTimeUs(){
+  struct timespec current;
+    long result, seconds, microseconds;
+    if( is_time_init == 0 ){
+      if( clock_gettime( CLOCK_REALTIME, &init_time ) == -1 ){
+        perror("clock_gettime");
+      }
+      is_time_init = 1;
+      result = 0L;
+    } else {
+      if( clock_gettime( CLOCK_REALTIME, &current ) == -1 ){
+        perror("clock_gettime");
+      }
+
+      seconds = (long)current.tv_sec - init_time.tv_sec;
+      microseconds = (long)((current.tv_nsec - init_time.tv_nsec)/1000);
+      result = seconds*1000000 + microseconds;
+
+      //result = (long)( ((current.tv_sec - init_time.tv_sec) * 1000) +
+      //    ((current.tv_nsec - init_time.tv_nsec)/100000) );
+    }
+    return result;
+}
+
 /**
  * \brief Initializes the workload structure provided with the task list
  * provided 
@@ -143,14 +167,16 @@ int initStats(Workload* wl, Stats* stats) {
   int task_num = wl->task_num;
   stats->start_time_ms = 0;//clock; //TODO
   stats->end_time_ms = 0;
-  stats->idle_time_ms = 0;
-  stats->exec_time_ms = 0;
+  stats->idle_time_us = 0;
+  stats->exec_time_us = 0;
+  stats->exec_num = 0;
+  stats->idle_num = 0;
   stats->total_deadlines_missed = 0;//; //TODO
 
   TaskStats ** ts_ptr = malloc(sizeof(TaskStats*) * task_num);
   for (i = 0; i < task_num; i++) {
     ts_ptr[i] = malloc(sizeof(TaskStats));
-    ts_ptr[i]->exec_time_ms = 0;
+    ts_ptr[i]->exec_time_us = 0;
     ts_ptr[i]->exec_number = 0;
     ts_ptr[i]->deadlines_missed = 0;
   }
@@ -160,23 +186,17 @@ int initStats(Workload* wl, Stats* stats) {
 }
 
 //Updates idle time if taskId = -1, updates a task stats otherwise.
-void updateStats(int taskId, Workload* wl, int startms, int endms,
+void updateStats(int taskId, Workload* wl, long startus, long endus,
     Stats* stats) {
-  if (taskId == -1 && (startms > stats->start_time_ms)) {
-    stats->idle_time_ms = (endms - startms);
+  if (taskId == -1 && (startus/1000 > stats->start_time_ms)) {
+    stats->idle_time_us = (endus - startus);
+    stats->idle_num++;
   } else if (taskId != -1) { //checking for non-neg index, led to segfault
-    stats->exec_time_ms += (endms - startms);
-    (stats->task_stats[taskId])->exec_time_ms += (endms - startms);
+    stats->exec_time_us += (endus - startus);
+    stats->exec_num++;
+    (stats->task_stats[taskId])->exec_time_us += (endus - startus);
     (stats->task_stats[taskId])->exec_number += 1;
-
-    //TODO: check if deadline was missed.
-  } else {
-    //TODO?
   }
-}
-
-void logPrint( const char * format, ... ){
-
 }
 
 void logEvent(EVENT_TYPE et, int info) {
@@ -185,7 +205,7 @@ void logEvent(EVENT_TYPE et, int info) {
 #ifdef CONSOLE_PRINT
   switch(et){
   case SCHED_START:
-    printf("SHCEDULING A TASK info %d time %lu\n", info, getTime());
+    printf("SCHEDULING A TASK info %d time %lu\n", info, getTime());
     break;
   case NOTHING_SCHED:
     printf("NO TASK SCHEDULED info %d time %lu\n", info, getTime());
@@ -257,7 +277,7 @@ void _runTest(clock_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
     if (id != -1) {
       logEvent(TASK_SCHED, id);
       //LOG: start task spin
-      pre_exec = getTime(); //TODO by this time first deadline has passed!
+      pre_exec = getTimeUs(); //TODO by this time first deadline has passed!
 //#ifndef ALYSSA_TESTING
       updateStats(-1, wl, post_exec, pre_exec, stats);
       //#endif
@@ -267,13 +287,13 @@ void _runTest(clock_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       //spin((wl->tasks[id])->exec_time_us*1000);
       logEvent(TASK_EXEC_END, id);
       //LOG: end task spin
-      post_exec = getTime();
+      post_exec = getTimeUs();
       //#ifdef ALYSSA_TESTING
       updateStats(id, wl, pre_exec, post_exec, stats);
       //#endif
       //update workload
-      (wl->tasks[id])->last_finish_us = post_exec-startTime;
-      (wl->tasks[id])->last_exec_us = pre_exec-startTime;
+      (wl->tasks[id])->last_finish_us = post_exec/1000-startTime;
+      (wl->tasks[id])->last_exec_us = pre_exec/1000-startTime;
       (wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
 //#ifdef ALYSSA_TESTING
      // printf("[%d]\n",id);
@@ -327,11 +347,22 @@ void displayStats(Stats* stats, int testSize) {
   int i;
   for (i = 0; i < testSize; i++) {
     printf(
-        "[%d]\ndeadlines missed: %d\nexecuted time ms: %lu\nexecution number: %d\n",
+        "[%d]\ndeadlines missed: %d\nexecuted time ms: %lu\nexecution number: %d\nexecution avg: %f\n",
         i, (stats->task_stats[i])->deadlines_missed,
-        (stats->task_stats[i])->exec_time_ms,
-        (stats->task_stats[i])->exec_number);
+        (stats->task_stats[i])->exec_time_us,
+        (stats->task_stats[i])->exec_number,
+        (stats->task_stats[i])->exec_time_us*1.0/stats->task_stats[i]->exec_number);
   }
+  printf("\tStart time: %d\n", stats->start_time_ms);
+  printf("\tEnd time: %d\n", stats->end_time_ms);
+  printf("\tTotal time: %d\n", (stats->end_time_ms)-(stats->start_time_ms));
+  printf("\tIdle time: %lu\n", (stats->idle_time_us));
+  printf("\tIdle num: %d\n", (stats->idle_num));
+  printf("\tExec time: %lu\n", (stats->exec_time_us));
+  printf("\tExec num: %d\n", (stats->exec_num));
+  printf("\tIdle time average: %f\n", (stats->idle_time_us)/1000.0/(stats->idle_num));
+  printf("\tExec time average: %f\n", (stats->exec_time_us)/1000.0/(stats->exec_num));
+  printf("\tCPU Utilization: %f\n", (stats->exec_time_us)/1000.0/((stats->end_time_ms)-(stats->start_time_ms)));
   printf("\tOverall deadlines missed: %d\n", stats->total_deadlines_missed);
   return;
 }

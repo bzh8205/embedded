@@ -54,7 +54,7 @@ typedef struct {
 } Workload;
 
 typedef struct {
-  long exec_time_ms;
+  long exec_time_us;
   int exec_number;
   int deadlines_missed;
 } TaskStats;
@@ -62,13 +62,12 @@ typedef struct {
 typedef struct {
   int start_time_ms;
   int end_time_ms;
-  int idle_time_ms;
-  int exec_time_ms;
+  long idle_time_us;
+  long exec_time_us;
+  int exec_num;
+  int idle_num;
   int total_deadlines_missed;
   TaskStats ** task_stats;
 } Stats;
-
-
-
 
 #endif //Workload.h
