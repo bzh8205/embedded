@@ -238,6 +238,9 @@ void logEvent(EVENT_TYPE et, int info) {
   case END_TEST:
     printf("TEST END info %d time %lu\n", info, getTime());
     break;
+  case DEADLINE_MISSED:
+    printf("DEADLINE MISSED info %d time %lu\n", info, getTime());
+    break;
   }
 #endif
 }
@@ -265,6 +268,7 @@ void updateDeadlines(long lastClock, Workload* wl,Stats * stats) {
 
       //update the deadline missed
       //printf("UD[%d]:%d\n",id, (wl->tasks[id])->next_deadline_us);
+      LogEvent( DEADLINE_MISSED, id );
       (stats->task_stats[id])->deadlines_missed += 1;
       stats->total_deadlines_missed += 1;
     }

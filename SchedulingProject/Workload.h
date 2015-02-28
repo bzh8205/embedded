@@ -28,7 +28,9 @@ typedef enum {
   //start of entire test
   START_TEST, //EVENT 5, info: 0
   //end of entire test
-  END_TEST //EVENT 6, info: 0
+  END_TEST, //EVENT 6, info: 0
+  //deadline missed
+  DEADLINE_MISSED //EVENT 7, info: task id
 } EVENT_TYPE;
 
 typedef struct {
