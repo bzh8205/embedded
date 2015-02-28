@@ -272,7 +272,7 @@ void updateDeadlines(long lastClock, Workload* wl,Stats * stats) {
 
       //update the deadline missed
       //printf("UD[%d]:%d\n",id, (wl->tasks[id])->next_deadline_us);
-      LogEvent( DEADLINE_MISSED, id );
+      logEvent( DEADLINE_MISSED, id );
       (stats->task_stats[id])->deadlines_missed += 1;
       stats->total_deadlines_missed += 1;
     }
