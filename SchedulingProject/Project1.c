@@ -11,7 +11,14 @@
 #include "Scheduler.h"
 #include "Project1.h"
 
+/** ~~~~~~COMPILER FLAGS~~~~~~~~~~~~~~*/
 //#define CONSOLE_PRINT
+//#define TEST2			//running 2nd task set
+//#define TEST3			//running 3rd task set
+				//default 1st task set
+//#define EDF_TEST		//running test using EDF scheduler
+//#define LST_TEST		//running test using LST scheduler
+				//default Rate Mon
 
 //util variables
 unsigned char is_time_init = 0;
@@ -63,8 +70,14 @@ int main(int argc, char *argv[]) {
         (wl.tasks[i])->next_deadline_us, (wl.tasks[i])->last_exec_us);
   }
 
-  //runTest(&wl, EARLIEST_DEADLINE, &stats);
+  //Select Scheduling algorithm to benchmark
+#ifdef EDF_TEST
+  runTest(&wl, EARLIEST_DEADLINE, &stats);
+#elif LST_TEST
   runTest(&wl, LEAST_SLACK, &stats);
+#else
+  runTest(&wl, LEAST_SLACK, &stats);
+#endif
 //#ifdef ALYSSA_TESTING
   //print out the stats
   displayStats(&stats,test1Size);
