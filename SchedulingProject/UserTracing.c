@@ -37,8 +37,8 @@ void initUserTracing( const char * programName ) {
 
 }
 
-void userTraceEvent( int event_id, unsigned int d1, unsigned int d2 ){
-  trace_logi( event_id, d1, eventId );
+void userTraceEvent( int event_id, unsigned int info){
+  trace_logi( event_id, info, eventId );
   eventId++;
   //TRACE_EVENT( _programName, TraceEvent(_NTO_TRACE_INSERTUSRSTREVENT, event_id, str ));
 }

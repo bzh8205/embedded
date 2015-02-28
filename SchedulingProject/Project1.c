@@ -180,7 +180,7 @@ void logPrint( const char * format, ... ){
 }
 
 void logEvent(EVENT_TYPE et, int info) {
-  insertUserEvent((int)et, info, 0);
+  userTraceEvent((int)et, info);
 
 #ifdef CONSOLE_PRINT
   switch(et){
