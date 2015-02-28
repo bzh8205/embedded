@@ -360,21 +360,21 @@ void displayStats(Stats* stats, int testSize) {
   int i;
   for (i = 0; i < testSize; i++) {
     printf(
-        "[%d]\ndeadlines missed: %d\nexecuted time ms: %lu\nexecution number: %d\nexecution avg: %f\n",
+        "[%d]\ndeadlines missed: %d\nexecuted time ms: %lu\nexecution number: %d\nexecution avg ms: %f\n",
         i, (stats->task_stats[i])->deadlines_missed,
-        (stats->task_stats[i])->exec_time_us,
+        (stats->task_stats[i])->exec_time_us/1000,
         (stats->task_stats[i])->exec_number,
-        (stats->task_stats[i])->exec_time_us*1.0/stats->task_stats[i]->exec_number);
+        (stats->task_stats[i])->exec_time_us/1000.0/stats->task_stats[i]->exec_number);
   }
-  printf("\tStart time: %d\n", stats->start_time_ms);
-  printf("\tEnd time: %d\n", stats->end_time_ms);
-  printf("\tTotal time: %d\n", (stats->end_time_ms)-(stats->start_time_ms));
-  printf("\tIdle time: %lu\n", (stats->idle_time_us));
+  printf("\tStart time ms: %d\n", stats->start_time_ms);
+  printf("\tEnd time ms: %d\n", stats->end_time_ms);
+  printf("\tTotal time ms: %d\n", (stats->end_time_ms)-(stats->start_time_ms));
+  printf("\tIdle time us: %lu\n", (stats->idle_time_us));
   printf("\tIdle num: %d\n", (stats->idle_num));
-  printf("\tExec time: %lu\n", (stats->exec_time_us));
+  printf("\tExec time us: %lu\n", (stats->exec_time_us));
   printf("\tExec num: %d\n", (stats->exec_num));
-  printf("\tIdle time average: %f\n", (stats->idle_time_us)/1000.0/(stats->idle_num));
-  printf("\tExec time average: %f\n", (stats->exec_time_us)/1000.0/(stats->exec_num));
+  printf("\tIdle time average ms: %f\n", (stats->idle_time_us)/1000.0/(stats->idle_num));
+  printf("\tExec time average ms: %f\n", (stats->exec_time_us)/1000.0/(stats->exec_num));
   printf("\tCPU Utilization: %f\n", (stats->exec_time_us)/1000.0/((stats->end_time_ms)-(stats->start_time_ms)));
   printf("\tOverall deadlines missed: %d\n", stats->total_deadlines_missed);
   return;
