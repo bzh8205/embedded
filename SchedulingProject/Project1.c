@@ -3,12 +3,15 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <math.h>
+#include <sys/trace.h>
 #include <sys/neutrino.h>
 #include "BurnUtility.h"
 #include "ThreadRunner.h"
 #include "UserTracing.h"
 #include "Scheduler.h"
 #include "Project1.h"
+
+//#define CONSOLE_PRINT
 
 //util variables
 unsigned char is_time_init = 0;
@@ -172,40 +175,38 @@ void updateStats(int taskId, Workload* wl, int startms, int endms,
   }
 }
 
-void logEvent(EVENT_TYPE et, int info) {
+void logPrint( const char * format, ... ){
 
-  char s[50];
-  sprintf(s,"%d\t%lu", info, getTime());
+}
+
+void logEvent(EVENT_TYPE et, int info) {
+  insertUserEvent((int)et, info, 0);
+
+#ifdef CONSOLE_PRINT
   switch(et){
   case SCHED_START:
     printf("SHCEDULING A TASK info %d time %lu\n", info, getTime());
-    userTraceEvent(0,s);
     break;
   case NOTHING_SCHED:
     printf("NO TASK SCHEDULED info %d time %lu\n", info, getTime());
-    userTraceEvent(1,s);
     break;
   case TASK_SCHED:
     printf("TASK SCHEDULED info %d time %lu\n", info, getTime());
-    userTraceEvent(2,s);
     break;
   case TASK_EXEC_START:
     printf("TASK EXECUTION START info %d time %lu\n", info, getTime());
-    userTraceEvent(3,s);
     break;
   case TASK_EXEC_END:
     printf("TASK EXECUTION END info %d time %lu\n", info, getTime());
-    userTraceEvent(4,s);
     break;
   case START_TEST:
     printf("TEST START info %d time %lu\n", info, getTime());
-    userTraceEvent(5,s);
     break;
   case END_TEST:
     printf("TEST END info %d time %lu\n", info, getTime());
-    userTraceEvent(6,s);
     break;
   }
+#endif
 }
 
 void printTaskInfo(Task* t) {
@@ -276,16 +277,20 @@ void _runTest(clock_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
       (wl->tasks[id])->next_deadline_us +=(wl->tasks[id])->deadline_us;
 //#ifdef ALYSSA_TESTING
      // printf("[%d]\n",id);
+#ifdef CONSOLE_PRINT
         printf("%lu\n",tick-startTime);
         printTaskInfo( (wl->tasks[id]) );
+#endif
 //#endif
       //bad for wiggle spins
       //printf("took %lu\n", post_exe - pre_exe);
     } else {
 //#ifdef ALYSSA_TESTING
+#ifdef CONSOLE_PRINT
       printf("Nothing Scheduled\n");
       //updateDeadlines(getTime(), wl);
-printf("%lu\n",tick-startTime);
+      printf("%lu\n",tick-startTime);
+#endif
 //#endif
       logEvent( NOTHING_SCHED, 0 );
     }
@@ -300,12 +305,12 @@ void runTest(Workload* wl, SCHED_ALG alg, Stats* stats) {
   startTime = getTime();
   logEvent( START_TEST, 0 );
   stats->start_time_ms = startTime;
-  printf("~~~~~~~~~~Starting Sim at %lu~~~~~~~~~~~~\n\n", startTime);
+  printf("~~~~~~~~~~Starting Sim at %lu~~~~~~~~~~~~\n", startTime);
   _runTest( startTime, wl, alg, stats );
   endTime = getTime();
   logEvent( END_TEST, 0 );
   stats->end_time_ms = endTime;
-  printf("\n\n~~~~~~~~~Done with simulation at %lu~~~~~~~\n", endTime);
+  printf("\n~~~~~~~~~Done with simulation at %lu~~~~~~~\n", endTime);
   return;
 }
 
@@ -322,12 +327,12 @@ void displayStats(Stats* stats, int testSize) {
   int i;
   for (i = 0; i < testSize; i++) {
     printf(
-        "[%d]\ndeadlines missed:%d\nexecuted cycles:%lu\nexecution number:%d\n",
+        "[%d]\ndeadlines missed: %d\nexecuted time ms: %lu\nexecution number: %d\n",
         i, (stats->task_stats[i])->deadlines_missed,
         (stats->task_stats[i])->exec_time_ms,
         (stats->task_stats[i])->exec_number);
   }
-  printf("\tOverall deadlines missed:%d\n", stats->total_deadlines_missed);
+  printf("\tOverall deadlines missed: %d\n", stats->total_deadlines_missed);
   return;
 }
 

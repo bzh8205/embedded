@@ -10,6 +10,8 @@
 #include "ThreadRunner.h"
 #include "Workload.h"
 
+//#define DEBUG_PRINT
+
 int RUN_REPLY = 0;
 int EXIT_REPLY = 1;
 
@@ -51,15 +53,21 @@ void TaskThread(void *arguments) {
   }
 
   while (1){
+#ifdef DEBUG_PRINT
     printf("Thread id %d waiting on server reply\n", threadId);
+#endif
     int reply = MsgSend(coid, &threadId, sizeof(threadId), &rmsg, sizeof(rmsg));
+#ifdef DEBUG_PRINT
     printf("Thread id %d recieved a reply\n", threadId);
+#endif
     if ( reply == -1 ){
       fprintf (stderr, "Error during MsgSend\n");
       perror (NULL);
       exit (EXIT_FAILURE);
     } else if ( rmsg == 0 ){
+#ifdef DEBUG_PRINT
       printf("Spin for %d\n", spinTime);
+#endif
       spin(spinTime*1000);
     } else {
       break;
@@ -100,7 +108,9 @@ void initThreadRunner(Workload *workload){
 
 void runThread(int num){
   int message;
+#ifdef DEBUG_PRINT
   printf("Running thread num %d with rcvid %d\n", num, rcvids_ptr[num]);
+#endif
   MsgReply( rcvids_ptr[num], EOK, &RUN_REPLY, sizeof(RUN_REPLY) );
   rcvids_ptr[num] = MsgReceive(chid, &message, sizeof(message), NULL);
 }
@@ -111,7 +121,7 @@ void destroyThreadRunner(){
     MsgReply( rcvids_ptr[iter], EOK, &EXIT_REPLY, sizeof(EXIT_REPLY) );
   }
   printf("Waiting for threads to end...\n");
-  sleep(1);
+  spin(1000*1000);
   printf("Destroying channel\n");
   ChannelDestroy(chid);
 }
