@@ -48,34 +48,41 @@ int main(int argc, char *argv[]) {
   SchedulerTest(argv[0],RATE_MONOTONIC,test1,test1Size);
   printf("\nRunning RATE_MONOTONIC with test2\n\n");
   SchedulerTest(argv[0],RATE_MONOTONIC,test2,test2Size);
+
+  /*
   printf("\nRunning RATE_MONOTONIC with test3\n\n");
   SchedulerTest(argv[0],RATE_MONOTONIC,test3,test3Size);
   printf("\nRunning RATE_MONOTONIC with test4\n\n");
   SchedulerTest(argv[0],RATE_MONOTONIC,test4,test4Size);
   printf("\nRunning RATE_MONOTONIC with test5\n\n");
   SchedulerTest(argv[0],RATE_MONOTONIC,test5,test5Size);
+  */
 
   printf("\nRunning LEAST_SLACK with test1\n\n");
   SchedulerTest(argv[0],LEAST_SLACK,test1,test1Size);
   printf("\nRunning LEAST_SLACK with test2\n\n");
   SchedulerTest(argv[0],LEAST_SLACK,test2,test2Size);
+  /*
   printf("\nRunning LEAST_SLACK with test3\n\n");
   SchedulerTest(argv[0],LEAST_SLACK,test3,test3Size);
   printf("\nRunning LEAST_SLACK with test4\n\n");
   SchedulerTest(argv[0],LEAST_SLACK,test4,test4Size);
   printf("\nRunning LEAST_SLACK with test5\n\n");
   SchedulerTest(argv[0],LEAST_SLACK,test5,test5Size);
+  */
 
   printf("\nRunning EARLIEST_DEADLINE with test1\n\n");
   SchedulerTest(argv[0],EARLIEST_DEADLINE,test1,test1Size);
   printf("\nRunning EARLIEST_DEADLINE with test2\n\n");
   SchedulerTest(argv[0],EARLIEST_DEADLINE,test2,test2Size);
+  /*
   printf("\nRunning EARLIEST_DEADLINE with test3\n\n");
   SchedulerTest(argv[0],EARLIEST_DEADLINE,test3,test3Size);
   printf("\nRunning EARLIEST_DEADLINE with test4\n\n");
   SchedulerTest(argv[0],EARLIEST_DEADLINE,test4,test4Size);
   printf("\nRunning EARLIEST_DEADLINE with test5\n\n");
   SchedulerTest(argv[0],EARLIEST_DEADLINE,test5,test5Size);
+  */
 
 
   return 0;
