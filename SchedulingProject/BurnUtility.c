@@ -6,7 +6,7 @@
 #include "BurnUtility.h"
 #include "Project1.h"	//adding new
 
-#define TEST_NUM 100
+#define TEST_NUM 20
 
 /**
  * \brief burns cpu cycles for supposed time

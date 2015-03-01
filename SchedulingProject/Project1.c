@@ -330,7 +330,7 @@ void _runTest(clock_t startTime, Workload* wl, SCHED_ALG alg, Stats* stats){
   long tick=0;
   //while time < configuration.test_duration
   tick = getTime();
-  while (tick < startTime + 200*FACTOR) {//TODO remove FACTOR
+  while (tick < startTime + RUNTIME) {//TODO remove FACTOR
     updateDeadlines(tick-startTime, wl,stats);
    //TODO not updating fast enough, times between execution too costly
     sched_ctr++;
