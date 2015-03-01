@@ -23,7 +23,7 @@
 				//default Rate Mon
 
 //util variables
-unsigned char is_time_init = 0;
+unsigned char is_time_init;
 struct timespec init_time;
 
 /*~~~~~~~~ Task Workload Tests~~~~~~~~~~~~~~~~*/
@@ -85,6 +85,7 @@ void SchedulerTest(const char * programName, SCHED_ALG alg, unsigned int test[][
   Workload wl;
     Stats stats;
     int i;
+    is_time_init = 0;
     fudge = 1; //defaulting fudge variable before test adjustment
     initSpinUtility();
     spinTest();
@@ -94,7 +95,7 @@ void SchedulerTest(const char * programName, SCHED_ALG alg, unsigned int test[][
     //printf("Fudge: %f\n",fudge);
     //create workload struct from descriptor
 
-    if (!initWorkLoad(&wl, test1, testSize)) {
+    if (!initWorkLoad(&wl, test, testSize)) {
       printf("Error initializing Workload struct\n");
     }
 
@@ -105,7 +106,7 @@ void SchedulerTest(const char * programName, SCHED_ALG alg, unsigned int test[][
     }
 
     //check
-    for (i = 0; i < test1Size; i++) {
+    for (i = 0; i < testSize; i++) {
       printf("id:%d C:%d P:%d D:%d LF:%d ND:%d LE:%d\n", (wl.tasks[i])->id,
           (wl.tasks[i])->exec_time_us, (wl.tasks[i])->period_time_us,
           (wl.tasks[i])->deadline_us, (wl.tasks[i])->last_finish_us,
@@ -116,13 +117,15 @@ void SchedulerTest(const char * programName, SCHED_ALG alg, unsigned int test[][
     runTest(&wl, alg, &stats);
   //#ifdef ALYSSA_TESTING
     //print out the stats
-    displayStats(&stats,test1Size);
+    displayStats(&stats,testSize);
   //#endif
     //free stats
-    destroyStats(&stats, test1Size);
+    destroyStats(&stats, testSize);
 
     //free workload
-    destroyWorkLoad(&wl, test1Size);
+    destroyWorkLoad(&wl, testSize);
+
+    destroyThreadRunner();
 
     spinTest();
 }

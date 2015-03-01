@@ -124,4 +124,5 @@ void destroyThreadRunner(){
   spin(1000*1000);
   printf("Destroying channel\n");
   ChannelDestroy(chid);
+  free(rcvids_ptr);
 }
