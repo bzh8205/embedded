@@ -1,0 +1,930 @@
+
+Running RATE_MONOTONIC with test1
+
+Got:16530
+Want:100
+Fudge:0.006050
+Running 100 burns:
+	max 127, min 95, avg 98.600000, peaks 1
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 65538
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 131074
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 196610
+Creating thread for task id 3, with exec_time 100
+Creating thread with priority 10
+Thread 3 created
+Received rcvid 262146
+Creating thread for task id 4, with exec_time 200
+Creating thread with priority 10
+Thread 4 created
+Received rcvid 327682
+id:0 C:100 P:700 D:700 LF:0 ND:700 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:800 D:800 LF:0 ND:800 LE:0
+id:3 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+id:4 C:200 P:1600 D:1600 LF:0 ND:1600 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 2942
+execution number: 29
+execution avg ms: 101.467069
+[1]
+deadlines missed: 0
+executed time ms: 8106
+execution number: 40
+execution avg ms: 202.669275
+[2]
+deadlines missed: 0
+executed time ms: 2520
+execution number: 25
+execution avg ms: 100.824600
+[3]
+deadlines missed: 0
+executed time ms: 1975
+execution number: 20
+execution avg ms: 98.784850
+[4]
+deadlines missed: 0
+executed time ms: 2605
+execution number: 13
+execution avg ms: 200.430615
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 126
+	Exec time us: 18151226
+	Exec num: 127
+	Idle time average ms: 0.007937
+	Exec time average ms: 142.923039
+	CPU Utilization: 0.907561
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Thread 3 finished
+Thread 4 finished
+Destroying channel
+Running 100 burns:
+	max 123, min 94, avg 98.920000, peaks 0
+
+Running RATE_MONOTONIC with test2
+
+Got:16463
+Want:100
+Fudge:0.006074
+Running 100 burns:
+	max 126, min 95, avg 99.480000, peaks 1
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 393218
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 458754
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 524290
+id:0 C:100 P:300 D:300 LF:0 ND:300 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 6827
+execution number: 67
+execution avg ms: 101.909881
+[1]
+deadlines missed: 0
+executed time ms: 8078
+execution number: 40
+execution avg ms: 201.969275
+[2]
+deadlines missed: 0
+executed time ms: 2072
+execution number: 20
+execution avg ms: 103.634300
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 2000
+	Idle num: 126
+	Exec time us: 16979419
+	Exec num: 127
+	Idle time average ms: 0.015873
+	Exec time average ms: 133.696213
+	CPU Utilization: 0.848971
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Destroying channel
+Running 100 burns:
+	max 123, min 95, avg 98.760000, peaks 0
+
+Running RATE_MONOTONIC with test3
+
+Got:16490
+Want:100
+Fudge:0.006064
+Running 100 burns:
+	max 128, min 95, avg 98.930000, peaks 1
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 589826
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 655362
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 720898
+Creating thread for task id 3, with exec_time 100
+Creating thread with priority 10
+Thread 3 created
+Received rcvid 786434
+id:0 C:100 P:400 D:400 LF:0 ND:400 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:800 D:800 LF:0 ND:800 LE:0
+id:3 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 5118
+execution number: 50
+execution avg ms: 102.364400
+[1]
+deadlines missed: 0
+executed time ms: 8039
+execution number: 40
+execution avg ms: 200.994750
+[2]
+deadlines missed: 0
+executed time ms: 2543
+execution number: 25
+execution avg ms: 101.744200
+[3]
+deadlines missed: 0
+executed time ms: 2025
+execution number: 20
+execution avg ms: 101.284500
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 134
+	Exec time us: 17727305
+	Exec num: 135
+	Idle time average ms: 0.007463
+	Exec time average ms: 131.313370
+	CPU Utilization: 0.886365
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Thread 3 finished
+Destroying channel
+Running 100 burns:
+	max 125, min 95, avg 98.630000, peaks 0
+
+Running RATE_MONOTONIC with test4
+
+Got:16470
+Want:100
+Fudge:0.006072
+Running 100 burns:
+	max 128, min 95, avg 99.050000, peaks 1
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 200
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 851970
+Creating thread for task id 1, with exec_time 400
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 917506
+id:0 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:1 C:400 P:500 D:500 LF:0 ND:500 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20281~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 8115
+execution number: 40
+execution avg ms: 202.894025
+[1]
+deadlines missed: 10
+executed time ms: 12089
+execution number: 30
+execution avg ms: 402.971533
+	Start time ms: 0
+	End time ms: 20281
+	Total time ms: 20281
+	Idle time us: 1000
+	Idle num: 69
+	Exec time us: 20204907
+	Exec num: 70
+	Idle time average ms: 0.014493
+	Exec time average ms: 288.641529
+	CPU Utilization: 0.996248
+	Overall deadlines missed: 10
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Destroying channel
+Running 100 burns:
+	max 122, min 95, avg 99.030000, peaks 0
+
+Running RATE_MONOTONIC with test5
+
+Got:16501
+Want:100
+Fudge:0.006060
+Running 100 burns:
+	max 122, min 95, avg 99.000000, peaks 0
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 983042
+id:0 C:100 P:500 D:500 LF:0 ND:500 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20001~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 4052
+execution number: 40
+execution avg ms: 101.310025
+	Start time ms: 0
+	End time ms: 20001
+	Total time ms: 20001
+	Idle time us: 401938
+	Idle num: 39
+	Exec time us: 4052401
+	Exec num: 40
+	Idle time average ms: 10.306103
+	Exec time average ms: 101.310025
+	CPU Utilization: 0.202610
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Destroying channel
+Running 100 burns:
+	max 126, min 95, avg 98.960000, peaks 1
+
+Running LEAST_SLACK with test1
+
+Got:16502
+Want:100
+Fudge:0.006060
+Running 100 burns:
+	max 122, min 95, avg 98.990000, peaks 0
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 1048578
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 1114114
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 1179650
+Creating thread for task id 3, with exec_time 100
+Creating thread with priority 10
+Thread 3 created
+Received rcvid 1245186
+Creating thread for task id 4, with exec_time 200
+Creating thread with priority 10
+Thread 4 created
+Received rcvid 1310722
+id:0 C:100 P:700 D:700 LF:0 ND:700 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:800 D:800 LF:0 ND:800 LE:0
+id:3 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+id:4 C:200 P:1600 D:1600 LF:0 ND:1600 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 2897
+execution number: 29
+execution avg ms: 99.915724
+[1]
+deadlines missed: 0
+executed time ms: 8155
+execution number: 40
+execution avg ms: 203.894225
+[2]
+deadlines missed: 0
+executed time ms: 2533
+execution number: 25
+execution avg ms: 101.344440
+[3]
+deadlines missed: 0
+executed time ms: 2075
+execution number: 20
+execution avg ms: 103.784100
+[4]
+deadlines missed: 0
+executed time ms: 2596
+execution number: 13
+execution avg ms: 199.738462
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 126
+	Exec time us: 18259218
+	Exec num: 127
+	Idle time average ms: 0.007937
+	Exec time average ms: 143.773370
+	CPU Utilization: 0.912961
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Thread 3 finished
+Thread 4 finished
+Destroying channel
+Running 100 burns:
+	max 147, min 95, avg 98.740000, peaks 4
+
+Running LEAST_SLACK with test2
+
+Got:16451
+Want:100
+Fudge:0.006079
+Running 100 burns:
+	max 151, min 95, avg 99.350000, peaks 5
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 1376258
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 1441794
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 1507330
+id:0 C:100 P:300 D:300 LF:0 ND:300 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 6884
+execution number: 67
+execution avg ms: 102.760448
+[1]
+deadlines missed: 0
+executed time ms: 8065
+execution number: 40
+execution avg ms: 201.644325
+[2]
+deadlines missed: 0
+executed time ms: 2001
+execution number: 20
+execution avg ms: 100.084600
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 126
+	Exec time us: 16952415
+	Exec num: 127
+	Idle time average ms: 0.007937
+	Exec time average ms: 133.483583
+	CPU Utilization: 0.847621
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Destroying channel
+Running 100 burns:
+	max 126, min 95, avg 99.330000, peaks 1
+
+Running LEAST_SLACK with test3
+
+Got:16461
+Want:100
+Fudge:0.006075
+Running 100 burns:
+	max 124, min 95, avg 99.020000, peaks 0
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 1572866
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 1638402
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 1703938
+Creating thread for task id 3, with exec_time 100
+Creating thread with priority 10
+Thread 3 created
+Received rcvid 1769474
+id:0 C:100 P:400 D:400 LF:0 ND:400 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:800 D:800 LF:0 ND:800 LE:0
+id:3 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 5135
+execution number: 50
+execution avg ms: 102.704300
+[1]
+deadlines missed: 0
+executed time ms: 8062
+execution number: 40
+execution avg ms: 201.569300
+[2]
+deadlines missed: 0
+executed time ms: 2598
+execution number: 25
+execution avg ms: 103.944080
+[3]
+deadlines missed: 0
+executed time ms: 2012
+execution number: 20
+execution avg ms: 100.634700
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 134
+	Exec time us: 17809283
+	Exec num: 135
+	Idle time average ms: 0.007463
+	Exec time average ms: 131.920615
+	CPU Utilization: 0.890464
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Thread 3 finished
+Destroying channel
+Running 100 burns:
+	max 140, min 95, avg 98.610000, peaks 2
+
+Running LEAST_SLACK with test4
+
+Got:16484
+Want:100
+Fudge:0.006066
+Running 100 burns:
+	max 121, min 95, avg 98.870000, peaks 0
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 200
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 1835010
+Creating thread for task id 1, with exec_time 400
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 1900546
+id:0 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:1 C:400 P:500 D:500 LF:0 ND:500 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 15
+executed time ms: 5062
+execution number: 25
+execution avg ms: 202.489040
+[1]
+deadlines missed: 9
+executed time ms: 12115
+execution number: 30
+execution avg ms: 403.838400
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 54
+	Exec time us: 17177378
+	Exec num: 55
+	Idle time average ms: 0.018519
+	Exec time average ms: 312.315964
+	CPU Utilization: 0.858869
+	Overall deadlines missed: 24
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Destroying channel
+Running 100 burns:
+	max 126, min 95, avg 99.360000, peaks 1
+
+Running LEAST_SLACK with test5
+
+Got:16492
+Want:100
+Fudge:0.006064
+Running 100 burns:
+	max 129, min 94, avg 99.030000, peaks 1
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 1966082
+id:0 C:100 P:500 D:500 LF:0 ND:500 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 3998
+execution number: 40
+execution avg ms: 99.960150
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 400938
+	Idle num: 39
+	Exec time us: 3998406
+	Exec num: 40
+	Idle time average ms: 10.280462
+	Exec time average ms: 99.960150
+	CPU Utilization: 0.199920
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Destroying channel
+Running 100 burns:
+	max 122, min 95, avg 98.950000, peaks 0
+
+Running EARLIEST_DEADLINE with test1
+
+Got:16452
+Want:100
+Fudge:0.006078
+Running 100 burns:
+	max 147, min 95, avg 98.750000, peaks 2
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 2031618
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 2097154
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 2162690
+Creating thread for task id 3, with exec_time 100
+Creating thread with priority 10
+Thread 3 created
+Received rcvid 2228226
+Creating thread for task id 4, with exec_time 200
+Creating thread with priority 10
+Thread 4 created
+Received rcvid 2293762
+id:0 C:100 P:700 D:700 LF:0 ND:700 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:800 D:800 LF:0 ND:800 LE:0
+id:3 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+id:4 C:200 P:1600 D:1600 LF:0 ND:1600 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 2937
+execution number: 29
+execution avg ms: 101.294793
+[1]
+deadlines missed: 0
+executed time ms: 8110
+execution number: 40
+execution avg ms: 202.769400
+[2]
+deadlines missed: 0
+executed time ms: 2564
+execution number: 25
+execution avg ms: 102.584240
+[3]
+deadlines missed: 0
+executed time ms: 2027
+execution number: 20
+execution avg ms: 101.384400
+[4]
+deadlines missed: 0
+executed time ms: 2590
+execution number: 13
+execution avg ms: 199.276769
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 126
+	Exec time us: 18231217
+	Exec num: 127
+	Idle time average ms: 0.007937
+	Exec time average ms: 143.552890
+	CPU Utilization: 0.911561
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Thread 3 finished
+Thread 4 finished
+Destroying channel
+Running 100 burns:
+	max 126, min 95, avg 98.830000, peaks 1
+
+Running EARLIEST_DEADLINE with test2
+
+Got:16447
+Want:100
+Fudge:0.006080
+Running 100 burns:
+	max 122, min 95, avg 99.150000, peaks 0
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 2359298
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 2424834
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 2490370
+id:0 C:100 P:300 D:300 LF:0 ND:300 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 6891
+execution number: 67
+execution avg ms: 102.864896
+[1]
+deadlines missed: 0
+executed time ms: 8050
+execution number: 40
+execution avg ms: 201.269425
+[2]
+deadlines missed: 0
+executed time ms: 2045
+execution number: 20
+execution avg ms: 102.284500
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 3999
+	Idle num: 126
+	Exec time us: 16988415
+	Exec num: 127
+	Idle time average ms: 0.031738
+	Exec time average ms: 133.767047
+	CPU Utilization: 0.849421
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Destroying channel
+Running 100 burns:
+	max 125, min 95, avg 99.450000, peaks 0
+
+Running EARLIEST_DEADLINE with test3
+
+Got:16471
+Want:100
+Fudge:0.006071
+Running 100 burns:
+	max 147, min 95, avg 99.540000, peaks 4
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 2555906
+Creating thread for task id 1, with exec_time 200
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 2621442
+Creating thread for task id 2, with exec_time 100
+Creating thread with priority 10
+Thread 2 created
+Received rcvid 2686978
+Creating thread for task id 3, with exec_time 100
+Creating thread with priority 10
+Thread 3 created
+Received rcvid 2752514
+id:0 C:100 P:400 D:400 LF:0 ND:400 LE:0
+id:1 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:2 C:100 P:800 D:800 LF:0 ND:800 LE:0
+id:3 C:100 P:1000 D:1000 LF:0 ND:1000 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 5043
+execution number: 50
+execution avg ms: 100.864660
+[1]
+deadlines missed: 0
+executed time ms: 8113
+execution number: 40
+execution avg ms: 202.844250
+[2]
+deadlines missed: 0
+executed time ms: 2505
+execution number: 25
+execution avg ms: 100.224480
+[3]
+deadlines missed: 0
+executed time ms: 2058
+execution number: 20
+execution avg ms: 102.934400
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 1000
+	Idle num: 134
+	Exec time us: 17721303
+	Exec num: 135
+	Idle time average ms: 0.007463
+	Exec time average ms: 131.268911
+	CPU Utilization: 0.886065
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Thread 2 finished
+Thread 3 finished
+Destroying channel
+Running 100 burns:
+	max 123, min 95, avg 99.110000, peaks 0
+
+Running EARLIEST_DEADLINE with test4
+
+Got:16480
+Want:100
+Fudge:0.006068
+Running 100 burns:
+	max 123, min 95, avg 98.660000, peaks 0
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 200
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 2818050
+Creating thread for task id 1, with exec_time 400
+Creating thread with priority 10
+Thread 1 created
+Received rcvid 2883586
+id:0 C:200 P:500 D:500 LF:0 ND:500 LE:0
+id:1 C:400 P:500 D:500 LF:0 ND:500 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20227~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 8094
+execution number: 40
+execution avg ms: 202.369175
+[1]
+deadlines missed: 10
+executed time ms: 12055
+execution number: 30
+execution avg ms: 401.838300
+	Start time ms: 0
+	End time ms: 20227
+	Total time ms: 20227
+	Idle time us: 1000
+	Idle num: 69
+	Exec time us: 20149916
+	Exec num: 70
+	Idle time average ms: 0.014493
+	Exec time average ms: 287.855943
+	CPU Utilization: 0.996189
+	Overall deadlines missed: 10
+Waiting for threads to end...
+Thread 0 finished
+Thread 1 finished
+Destroying channel
+Running 100 burns:
+	max 128, min 95, avg 98.630000, peaks 1
+
+Running EARLIEST_DEADLINE with test5
+
+Got:16471
+Want:100
+Fudge:0.006071
+Running 100 burns:
+	max 129, min 95, avg 98.910000, peaks 1
+SchedulingProject_gBrian142516935032416: line:36 function call TraceEvent() failed, errno(47): Operation canceled
+Creating channel
+Channel created with id 1
+Creating thread for task id 0, with exec_time 100
+Creating thread with priority 10
+Thread 0 created
+Received rcvid 2949122
+id:0 C:100 P:500 D:500 LF:0 ND:500 LE:0
+~~~~~~~~~~Starting Sim at 0~~~~~~~~~~~~
+
+~~~~~~~~~Done with simulation at 20000~~~~~~~
+[0]
+deadlines missed: 0
+executed time ms: 4925
+execution number: 40
+execution avg ms: 123.131150
+	Start time ms: 0
+	End time ms: 20000
+	Total time ms: 20000
+	Idle time us: 358946
+	Idle num: 39
+	Exec time us: 4925246
+	Exec num: 40
+	Idle time average ms: 9.203744
+	Exec time average ms: 123.131150
+	CPU Utilization: 0.246262
+	Overall deadlines missed: 0
+Waiting for threads to end...
+Thread 0 finished
+Destroying channel
+Running 100 burns:
+	max 152, min 95, avg 126.410000, peaks 80

@@ -4,10 +4,14 @@
 #include "Workload.h" //need for enum SCHED_ALG
 
 #define NS_CLOCK_SPEED 100000 //10us
-#define FACTOR 100  //factor used for easy changing of task workload weights
+#define FACTOR 1  //factor used for easy changing of task workload weights
 #define RUNTIME_TICKS 100
 #define RUNTIME (RUNTIME_TICKS*FACTOR)
 #define GETTIME_CONV 1000000L //scale gettime helper to ms
+
+//runs entire test for Algorithm and test set
+void SchedulerTest(const char * programName, SCHED_ALG alg,
+      unsigned int test[][3], int testSize);
 
 //TODO new time func
 long getTime();

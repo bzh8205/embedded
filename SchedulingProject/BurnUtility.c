@@ -6,6 +6,8 @@
 #include "BurnUtility.h"
 #include "Project1.h"	//adding new
 
+#define TEST_NUM 20
+
 /**
  * \brief burns cpu cycles for supposed time
  */
@@ -38,7 +40,7 @@ void initSpinUtility(){
 }
 
 void spinTest(){
-  int test_num = 250;
+  int test_num = TEST_NUM;
   int target = 100;
   printf("Running %d burns:\n",test_num);
   int max = -1;
