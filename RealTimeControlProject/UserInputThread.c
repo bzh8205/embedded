@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <pthread.h>    // pthread_create/exit
 #include "UserInputThread.h"
-#include "ThreadUtils.h"
+#include "GeneralUtils.h"
 
 void UserInputThread(void *arguments) {
   UserInputThreadArgs *args = (UserInputThreadArgs *) arguments;

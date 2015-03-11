@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <pthread.h>    // pthread_create/exit
 #include "ControlCalculationThread.h"
-#include "ThreadUtils.h"
+#include "GeneralUtils.h"
 
 void ControlCalculationThread(void *arguments) {
   ControlCalculationThreadArgs *args = (ControlCalculationThreadArgs *) arguments;

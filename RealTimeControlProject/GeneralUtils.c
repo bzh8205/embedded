@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <pthread.h>    // pthread_create/exit
+#include <pthread.h>  // pthread_create/exit
+#include "GeneralUtils.h"
 
 //inits given thread with args
 pthread_t *initThread( int rel_prio, void *thread, void *args ){
