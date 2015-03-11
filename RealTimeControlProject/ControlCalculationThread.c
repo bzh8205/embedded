@@ -16,8 +16,8 @@ void ControlCalculationThread(void *arguments) {
   ControlCalculationThreadArgs *args = (ControlCalculationThreadArgs *) arguments;
   int chid = args->ch_id;
   int threadId = args->thread_id;
-  printf("Thread %d created\n", threadId);
-  printf("Thread %d finished\n", threadId);
+  printf("ControlCalculationThread %d created\n", threadId);
+  printf("ControlCalculationThread %d finished\n", threadId);
   pthread_exit(0);
   return;
 }

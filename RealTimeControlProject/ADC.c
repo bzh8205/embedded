@@ -11,6 +11,7 @@
 #include <stdint.h>       /* for uintptr_t */
 #include <hw/inout.h>     /* for in*() and out*() functions */
 #include <sys/mman.h>     /* for mmap_device_io() */
+#include "ADC.h"
 
 static void SetSingleAtoDchannel( int channelNumber )
 {
