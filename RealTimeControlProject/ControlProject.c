@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+<<<<<<< HEAD
 #include "ADC.h"
+=======
+#include "ThreadRunner.h"
+>>>>>>> 3eeb7d99f5f451aa85b0531252884cd5ca465099
 
 int main(int argc, char *argv[]) {
     short vin;
@@ -21,5 +25,9 @@ int main(int argc, char *argv[]) {
     //Init DAC on channel 0
 
 	printf("Welcome to the QNX Momentics IDE\n");
+
+	startThreads();
+	endThreads();
+
 	return EXIT_SUCCESS;
 }

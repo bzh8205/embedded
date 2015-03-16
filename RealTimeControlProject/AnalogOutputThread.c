@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <pthread.h>    // pthread_create/exit
 #include "AnalogOutputThread.h"
-#include "ThreadUtils.h"
+#include "GeneralUtils.h"
 
 void AnalogOutputThread(void *arguments) {
   AnalogOutputThreadArgs *args = (AnalogOutputThreadArgs *) arguments;
