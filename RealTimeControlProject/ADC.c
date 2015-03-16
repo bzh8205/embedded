@@ -12,6 +12,8 @@
 #include <hw/inout.h>     /* for in*() and out*() functions */
 #include <sys/mman.h>     /* for mmap_device_io() */
 
+
+
 static void SetSingleAtoDchannel( int channelNumber )
 {
     if ( channelNumber <= 15 && channelNumber >= 0 )
@@ -112,6 +114,32 @@ int GetRootAccess()
     return status ;
 }
 
+//Sets up DAC, for analog output
+static void SetupAout()
+{
+    /* Get handles to the D to A registers */
+    a_out_value_MSB_handle = mmap_device_io( A_D_PORT_LENGTH, A_OUT_MSB_REGISTER );
+    a_out_value_LSB_handle = mmap_device_io( A_D_PORT_LENGTH, A_OUT_LSB_REGISTER );
+}
+
+// For generating a specific analog output at specified channel
+void GenerateAout( int voltage, int output_channel )
+{
+    unsigned int lsb_value = 0 ;
+    unsigned int msb_and_channel = 0 ;
+    unsigned int msb_and_lsb = 0 ;
+    double converted_voltage = ( 2048 * voltage ) / 10.0 ;  // assume output goes positive and negative
+
+    msb_and_lsb = 2048 + (int) ( ( converted_voltage + 0.5 ) ) ;    // round by adding 1/2 and truncating.
+    if ( msb_and_lsb > 4095 )
+        msb_and_lsb = 4095 ;                    // clip at largest possible value.
+    lsb_value = msb_and_lsb & 0xff ;            // just get the low byte
+    msb_and_channel = msb_and_lsb >> 8 ;        // just get the top 4 bits
+    msb_and_channel |= ( output_channel << 6 ) ;    // move channel to the top two bits.
+    printf( "MSB %02x  LSB %02x   ", msb_and_channel, lsb_value ) ;
+    out8( a_out_value_LSB_handle, lsb_value ) ;
+    out8( a_out_value_MSB_handle, msb_and_channel ) ;
+}
 #ifdef TEST_ADC
 int main(int argc, char *argv[])
 {

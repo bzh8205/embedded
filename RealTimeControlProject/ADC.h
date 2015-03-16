@@ -16,6 +16,8 @@
 #define A_D_INPUT_GAIN_REGISTER (A_D_BASE_ADDRESS + 3)
 #define A_D_INPUT_STATUS_REGISTER (A_D_INPUT_GAIN_REGISTER)
 #define I_O_CONTROL_REGISTER (A_D_BASE_ADDRESS + 4)
+#define A_OUT_LSB_REGISTER (A_D_BASE_ADDRESS + 6)
+#define A_OUT_MSB_REGISTER (A_D_BASE_ADDRESS + 7)
 
 #define D_I_O_PORT_LENGTH (1)
 #define D_I_O_CONTROL_REGISTER (A_D_BASE_ADDRESS + 0x0b)
@@ -33,6 +35,10 @@ static uintptr_t d_i_o_control_handle ;     // control register for ports A, B, 
 static uintptr_t d_i_o_port_a_handle ;
 static uintptr_t d_i_o_port_b_handle ;
 
+// analog output register handles
+static uintptr_t a_out_value_MSB_handle ;   // bits 0 - 3 are 4 MSB bits. Bits 6 & 7 are channel
+static uintptr_t a_out_value_LSB_handle ;   // write before write MSB
+
 static void SetSingleAtoDchannel( int channelNumber );
 
 static short MeasureVoltageOnChannel( int channelNumber );
@@ -47,5 +53,10 @@ static void SetupAtoD();
 // need root access to memory map device modules
 int GetRootAccess();
 
+//Sets up DAC, for analog output
+static void SetupAout();
+
+// For generating a specific analog output at specified channel
+void GenerateAout( int voltage, int output_channel );
 
 #endif //_ADC_H
