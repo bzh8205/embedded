@@ -10,11 +10,13 @@
 #include <unistd.h>
 #include <sys/neutrino.h> //channel creatte
 #include <pthread.h>    // pthread_create/exit
+#include <sys/netmgr.h> // channel attach
 #include "ThreadRunner.h"
 #include "AnalogInputThread.h"
 #include "AnalogOutputThread.h"
 #include "ControlCalculationThread.h"
 #include "UserInputThread.h"
+#include "ThreadMsg.h"
 
 static int chid;
 
@@ -22,19 +24,59 @@ static pthread_t* analogInputThread;
 static pthread_t* analogOutputThread;
 static pthread_t* userInputThread;
 static pthread_t* controlCalcThread;
+static int A_IN_THREAD_ID = 0;
+static int A_OUT_THREAD_ID = 1;
+static int U_IN_THREAD_ID = 2;
+static int CONTROL_THREAD_ID = 3;
+static int THREAD_IDS[] = { 0, 1, 2, 3 };
+static int CHANNEL_IDS[4];
+static int CONNECTION_IDS[4];
+static int NUM_THREADS = 4;
 
 void startThreads(){
-  printf("Creating channel\n");
-  chid = ChannelCreate (0);
-  printf("Channel created with id %d\n", chid);
+  int iter;
+  //threads need channels to receive messages
+  printf("Creating channels\n");
+  for( iter = 0 ; iter < NUM_THREADS ; iter++ ){
+    CHANNEL_IDS[iter] = ChannelCreate (0);
+  }
 
-  analogInputThread = initAnalogInputThread( chid, 0);
-  analogOutputThread = initAnalogOutputThread( chid, 0);
-  userInputThread = initUserInputThread( chid, 0);
-  controlCalcThread = initControlCalculationThread( chid, 0);
+  //we need connections to send messages to threads
+  printf("Creating connections\n");
+  for( iter = 0 ; iter < NUM_THREADS ; iter++ ){
+    CONNECTION_IDS[iter] = ConnectAttach(ND_LOCAL_NODE, 0, CHANNEL_IDS[iter], THREAD_IDS[iter], 0);
+  }
+
+  //create the threads and pass them their channel for messages
+  analogInputThread = initAnalogInputThread( CHANNEL_IDS[A_IN_THREAD_ID], A_IN_THREAD_ID);
+  analogOutputThread = initAnalogOutputThread( CHANNEL_IDS[A_OUT_THREAD_ID], A_OUT_THREAD_ID);
+  userInputThread = initUserInputThread( CHANNEL_IDS[U_IN_THREAD_ID], U_IN_THREAD_ID);
+  controlCalcThread = initControlCalculationThread( CHANNEL_IDS[CONTROL_THREAD_ID], CONTROL_THREAD_ID);
+
+  //Tests messaging chain
+  ThreadMessage msg = { 0 , 0 };
+  int reply_status;
+  reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+  printf("Analog Input result: %d\n", msg.value);
+  reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+  printf("Control Calculation result: %d\n", msg.value);
+  reply_status = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+  printf("Analog Output result: %d\n", msg.value);
+
 }
 
 void endThreads(){
-  printf("Destroying channel with id %d\n", chid);
-  ChannelDestroy(chid);
+  printf("Ending threads\n");
+  //this will tell each thread that it needs to exit
+  ThreadMessage msg = { 1 , 0 };
+  int replyStatus;
+  replyStatus = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+  replyStatus = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+  replyStatus = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+
+  int iter;
+  printf("Destroying channels\n");
+  for( iter = 0 ; iter < NUM_THREADS ; iter++ ){
+    ChannelDestroy(CHANNEL_IDS[iter]);
+  }
 }

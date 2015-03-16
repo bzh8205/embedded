@@ -12,9 +12,6 @@
 
 //#define DEBUG_PRINT
 
-int RUN_REPLY = 0;
-int EXIT_REPLY = 1;
-
 int *rcvids_ptr;
 int chid;
 int numThreads;
