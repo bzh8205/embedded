@@ -145,6 +145,11 @@ void GenerateAout( int voltage, int output_channel )
 int main(int argc, char *argv[])
 {
     int loop ;
+    int aout_channel ;
+    int voltage ;
+    int analog_input_channel_lookup_table[] =
+            {0, 8, 1, 9} ;  // Vout 0 to Vin 0, Vout 1 to Vin 8
+                            // Vout 2 to Vin 1, Vout 3 to Vin 9
 
     //TraceEvent( _NTO_TRACESTART ) ;
     //TraceEvent( _NTO_TRACE_INSERTUSRSTREVENT, _NTO_TRACE_USERFIRST, "start test" ) ;
@@ -152,6 +157,22 @@ int main(int argc, char *argv[])
     {
         SetupAtoD() ;
         SetupDIO() ;
+        SetupAout() ;
+
+        printf( "\nInstall Aout / Ain test cable and press a key: " ) ;
+        getchar() ;
+
+        for ( aout_channel = 0 ; aout_channel < 4 ; aout_channel++ )
+            for ( voltage = -1 ; voltage <= 1 ; voltage++ )
+            {
+                GenerateAout( voltage, aout_channel ) ;
+                sleep( 1 ) ;
+                printf( "Voltage %3d Channel %2d A/D in: %6d\n", voltage, aout_channel,
+                        MeasureVoltageOnChannel( analog_input_channel_lookup_table[ aout_channel ] ) ) ;
+            }
+
+        printf( "\nInstall Ain and DIO cable and press a key: " ) ;
+        getchar() ;
         printf( "\nStarting measurement on analog input line 0\n" ) ;
         for ( loop = 0 ; loop < 16 ; loop++ )
         {
@@ -167,4 +188,5 @@ int main(int argc, char *argv[])
     //TraceEvent( _NTO_TRACESTOP ) ;
     return EXIT_SUCCESS;
 }
+
 #endif
