@@ -16,22 +16,25 @@
 
 void UserInputThread(void *arguments) {
   UserInputThreadArgs *args = (UserInputThreadArgs *) arguments;
-  int chid = args->ch_id;
+  //TODO this isn't needed
+  //int chid = args->ch_id;
   int threadId = args->thread_id;
   printf("UserInputThread %d created\n", threadId);
 
-  printf("Enter \"Kp Ki Kd\" constants separated by spaces (i.e.) \"2.0 3.5 1.2\".\n Press only enter to exit\n");
+  printf("Enter \"Target Kp Ki Kd\" target and PID constants separated by spaces (i.e.) \"5.0 2.0 3.5 1.2\".\n");
+  printf("Press only enter to exit\n");
 
+  float target;
   float Kp;
   float Ki;
   float Kd;
 
   while( USER_IN_RUN_THREADS == 0 ) {
-    getPIDInput(&Kp, &Ki, &Kd);
+    getPIDInput(&target, &Kp, &Ki, &Kd);
   }
 
   while ( USER_IN_RUN_THREADS == 1 ){
-    getPIDInput(&Kp, &Ki, &Kd);
+    getPIDInput(&target, &Kp, &Ki, &Kd);
   }
 
   printf("UserInputThread: Exiting.\n");
@@ -40,19 +43,19 @@ void UserInputThread(void *arguments) {
   return;
 }
 
-void getPIDInput( float *Kp, float *Ki, float *Kd){
+void getPIDInput( float *target, float *Kp, float *Ki, float *Kd){
   int scan;
-  printf("Kp Ki Kd: ");
-  scan = scanf("%f %f %f", Kp, Ki, Kd);
+  printf("Target Kp Ki Kd: ");
+  scan = scanf("%f %f %f %f", target, Kp, Ki, Kd);
   printf("\n");
-  if( scan == 3 ) {
-    setPIDConstants(*Kp, *Ki, *Kd);
-    printf("UserInputThread: PID constants set.\n");
+  if( scan == 4 ) {
+    setPIDConstants(*target, *Kp, *Ki, *Kd);
+    printf("UserInputThread: Target and PID constants set.\n");
     USER_IN_RUN_THREADS = 1;
   } else if ( scan == EOF ){
     USER_IN_RUN_THREADS = -1;
   } else {
-    printf("UserInputThread: Invalid input, please enter 3 decimals seperated by spaces (i.e.) \"2.0 3.5 1.2\".\n");
+    printf("UserInputThread: Invalid input, please enter 4 numbers separated by spaces (i.e.) \"5.0 2.0 3.5 1.2\".\n");
   }
 }
 

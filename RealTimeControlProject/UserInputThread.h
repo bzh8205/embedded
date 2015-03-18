@@ -18,6 +18,6 @@ typedef struct {
 } UserInputThreadArgs;
 
 pthread_t *initUserInputThread(int chid, int threadId); //TODO define args
-void getPIDInput( float *Kp, float *Ki, float *Kd);
+void getPIDInput( float *target, float *Kp, float *Ki, float *Kd);
 
 #endif /* USERINPUTTHREAD_H_ */

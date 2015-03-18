@@ -51,9 +51,8 @@ void startThreads(){
   userInputThread = initUserInputThread( CHANNEL_IDS[U_IN_THREAD_ID], U_IN_THREAD_ID);
   controlCalcThread = initControlCalculationThread( CHANNEL_IDS[CONTROL_THREAD_ID], CONTROL_THREAD_ID);
 
-   while( USER_IN_RUN_THREADS == 0 ){
-     printf("Thread Runner: waiting for user input to start.\n");
-   }
+  printf("Thread Runner: waiting for user input to start.\n");
+  while( USER_IN_RUN_THREADS == 0 ){ }
 
   if( USER_IN_RUN_THREADS == 1 ) {
 

@@ -17,6 +17,9 @@ typedef struct {
 } ControlCalculationThreadArgs;
 
 pthread_t *initControlCalculationThread(int chid, int threadId); //TODO define args
-void setPIDConstants( float Kp, float Ki, float Kd );
+void setPIDConstants( float target, float Kp, float Ki, float Kd );
+long getTimeUs();
+float calculatePIDOutput(float pidInput);
+
 
 #endif /* CONTROLCALCULATIONTHREAD_H_ */
