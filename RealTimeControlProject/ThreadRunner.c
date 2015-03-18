@@ -64,11 +64,11 @@ void startThreads(){
 
     while( USER_IN_RUN_THREADS ){
       reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-      printf("Analog Input result: %d\n", msg.value);
+      printf("Analog Input result: %f\n", msg.value);
       reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-      printf("Control Calculation result: %d\n", msg.value);
+      printf("Control Calculation result: %f\n", msg.value);
       reply_status = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-      printf("Analog Output result: %d\n", msg.value);
+      printf("Analog Output result: %f\n", msg.value);
     }
   }
 

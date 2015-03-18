@@ -14,6 +14,7 @@
 #include "AnalogInputThread.h"
 #include "GeneralUtils.h"
 #include "ThreadMsg.h"
+#include "ADC.h"    //for adc mapping and reading
 
 void AnalogInputThread(void *arguments) {
   int rcvid;
@@ -22,19 +23,25 @@ void AnalogInputThread(void *arguments) {
   int chid = args->ch_id;
   int threadId = args->thread_id;
   printf("AnalogInputThread %d created\n", threadId);
-
-  //run until message signals to exit
-  while( 1 ){
-    rcvid = MsgReceive(chid, &message, sizeof(message), NULL);
-    if( message.exit != 1 ){
-      //TODO read analog input
-      message.value = 1234;
-      MsgReply( rcvid, EOK, &message, sizeof(message) );
-    } else {
-      printf("AnalogInputThread %d exiting\n", threadId);
-      MsgReply( rcvid, EOK, &message, sizeof(message) );
-      break;
+  //TODO init ADC
+  if ( ! GetRootAccess() ){
+    SetupAtoD();
+    //run until message signals to exit
+    while( 1 ){
+      rcvid = MsgReceive(chid, &message, sizeof(message), NULL);
+      if( message.exit != 1 ){
+        //TODO read analog input
+        message.value = MeasureVoltageOnChannel( 1 ); //digital reading from ADC on ch 1
+        message.value =((float)message.value / AD_SCALE) * INPUT_RANGE; //convert to volts
+        MsgReply( rcvid, EOK, &message, sizeof(message) );
+      } else {
+        printf("AnalogInputThread %d exiting\n", threadId);
+        MsgReply( rcvid, EOK, &message, sizeof(message) );
+        break;
+      }
     }
+  }else {
+    printf("AnalogInputThread::Couldn't get root access for mapping ADC\n");
   }
 
 

@@ -18,6 +18,9 @@
 #define I_O_CONTROL_REGISTER (A_D_BASE_ADDRESS + 4)
 #define A_OUT_LSB_REGISTER (A_D_BASE_ADDRESS + 6)
 #define A_OUT_MSB_REGISTER (A_D_BASE_ADDRESS + 7)
+//ADC input conversion
+#define AD_SCALE    (32768)
+#define INPUT_RANGE (10)
 
 #define D_I_O_PORT_LENGTH (1)
 #define D_I_O_CONTROL_REGISTER (A_D_BASE_ADDRESS + 0x0b)
@@ -57,6 +60,6 @@ int GetRootAccess();
 void SetupAout();
 
 // For generating a specific analog output at specified channel
-void GenerateAout( int voltage, int output_channel );
+void GenerateAout( double voltage, int output_channel );
 
 #endif //_ADC_H

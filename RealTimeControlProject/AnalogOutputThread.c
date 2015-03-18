@@ -14,6 +14,7 @@
 #include "AnalogOutputThread.h"
 #include "GeneralUtils.h"
 #include "ThreadMsg.h"
+#include "ADC.h"    //for DAC mapping and writing
 
 void AnalogOutputThread(void *arguments) {
   int rcvid;
@@ -23,18 +24,30 @@ void AnalogOutputThread(void *arguments) {
   int threadId = args->thread_id;
   printf("AnalogOutputThread %d created\n", threadId);
 
-  //run until message signals to exit
-  while( 1 ){
-    rcvid = MsgReceive(chid, &message, sizeof(message), NULL);
-    if( message.exit != 1 ){
-      //TODO read analog input
-      message.value = message.value * 2;
-      MsgReply( rcvid, EOK, &message, sizeof(message) );
-    } else {
-      printf("AnalogOutputThread %d exiting\n", threadId);
-      MsgReply( rcvid, EOK, &message, sizeof(message) );
-      break;
+  //Init DAC
+  if (! GetRootAccess() ){ //got root
+    SetupAout();
+
+    //run until message signals to exit
+    while( 1 ){
+      rcvid = MsgReceive(chid, &message, sizeof(message), NULL);
+      if( message.exit != 1 ){
+        //Write analog output
+        if ( (message.value >=-10) & (message.value <= 10) ) { 
+          GenerateAout (message.value,0); //output received value to ch 0
+        } else {
+            printf("AnalogOutputThread:: %fV is not a ranged value, no output\n",message.value);
+        }
+        MsgReply( rcvid, EOK, &message, sizeof(message) );
+        
+      } else {
+        printf("AnalogOutputThread %d exiting\n", threadId);
+        MsgReply( rcvid, EOK, &message, sizeof(message) );
+        break;
+      }
     }
+  } else { //no root access
+    printf("AnalogOutputThread::Couldn't get root access for mapping DAC\n");
   }
 
   printf("AnalogOutputThread %d finished\n", threadId);

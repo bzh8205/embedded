@@ -124,7 +124,7 @@ void SetupAout()
 }
 
 // For generating a specific analog output at specified channel
-void GenerateAout( int voltage, int output_channel )
+void GenerateAout( double voltage, int output_channel )
 {
     unsigned int lsb_value = 0 ;
     unsigned int msb_and_channel = 0 ;

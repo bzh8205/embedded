@@ -12,7 +12,7 @@ typedef struct {
   //should it exit?
   int exit;
   //data payload
-  int value;
+  double value;
 } ThreadMessage;
 
 
