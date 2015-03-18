@@ -15,7 +15,7 @@
 
 
 
-static void SetSingleAtoDchannel( int channelNumber )
+void SetSingleAtoDchannel( int channelNumber )
 {
     if ( channelNumber <= 15 && channelNumber >= 0 )
     {
@@ -26,7 +26,7 @@ static void SetSingleAtoDchannel( int channelNumber )
     }
 }
 
-static short MeasureVoltageOnChannel( int channelNumber )
+short MeasureVoltageOnChannel( int channelNumber )
 {
     unsigned short value ;
     unsigned short lsb_value ;
@@ -42,14 +42,14 @@ static short MeasureVoltageOnChannel( int channelNumber )
     return (short)value ;
 }
 
-static void SetupDIO()
+void SetupDIO()
 {
     d_i_o_control_handle = mmap_device_io( D_I_O_PORT_LENGTH, D_I_O_CONTROL_REGISTER ) ;
     d_i_o_port_a_handle = mmap_device_io( D_I_O_PORT_LENGTH, D_I_O_PORT_A ) ;
     d_i_o_port_b_handle = mmap_device_io( D_I_O_PORT_LENGTH, D_I_O_PORT_B ) ;
 }
 
-static void TestPorts()
+void TestPorts()
 {
     unsigned int testValue = 1 ;
     int count ;
@@ -81,7 +81,7 @@ static void TestPorts()
     printf( "\nDigital I O ports A and B testing completed\n" ) ;
 }
 
-static void SetupAtoD()
+void SetupAtoD()
 {
     uintptr_t i_o_control_handle ;
 
@@ -116,7 +116,7 @@ int GetRootAccess()
 }
 
 //Sets up DAC, for analog output
-static void SetupAout()
+void SetupAout()
 {
     /* Get handles to the D to A registers */
     a_out_value_MSB_handle = mmap_device_io( A_D_PORT_LENGTH, A_OUT_MSB_REGISTER );

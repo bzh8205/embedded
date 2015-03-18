@@ -18,8 +18,6 @@
 #include "UserInputThread.h"
 #include "ThreadMsg.h"
 
-static int chid;
-
 static pthread_t* analogInputThread;
 static pthread_t* analogOutputThread;
 static pthread_t* userInputThread;
@@ -53,16 +51,32 @@ void startThreads(){
   userInputThread = initUserInputThread( CHANNEL_IDS[U_IN_THREAD_ID], U_IN_THREAD_ID);
   controlCalcThread = initControlCalculationThread( CHANNEL_IDS[CONTROL_THREAD_ID], CONTROL_THREAD_ID);
 
-  //Tests messaging chain
-  ThreadMessage msg = { 0 , 0 };
-  int reply_status;
-  reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-  printf("Analog Input result: %d\n", msg.value);
-  reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-  printf("Control Calculation result: %d\n", msg.value);
-  reply_status = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-  printf("Analog Output result: %d\n", msg.value);
+   while( USER_IN_RUN_THREADS == 0 ){
+     printf("Thread Runner: waiting for user input to start.\n");
+   }
 
+  if( USER_IN_RUN_THREADS == 1 ) {
+
+    printf("Thread Runner: starting PID loop.\n");
+
+    //Tests messaging chain
+    ThreadMessage msg = { 0 , 0 };
+    int reply_status;
+
+    while( USER_IN_RUN_THREADS ){
+      reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+      printf("Analog Input result: %d\n", msg.value);
+      reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+      printf("Control Calculation result: %d\n", msg.value);
+      reply_status = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
+      printf("Analog Output result: %d\n", msg.value);
+    }
+  }
+
+  if( USER_IN_RUN_THREADS == -1 ){
+    printf("Thread Runner: Ending threads.\n");
+    endThreads();
+  }
 }
 
 void endThreads(){

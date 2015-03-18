@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
-<<<<<<< HEAD
+
 #include "ADC.h"
-=======
 #include "ThreadRunner.h"
->>>>>>> 3eeb7d99f5f451aa85b0531252884cd5ca465099
 
 int main(int argc, char *argv[]) {
     short vin;
@@ -13,13 +11,13 @@ int main(int argc, char *argv[]) {
     if ( ! GetRootAccess() )
     {
         SetupAtoD() ;
-        vin = MeasureVoltageOnChannel (1) ; //test read 
+        vin = MeasureVoltageOnChannel (1) ; //test read
         printf("Just read %6d V\n",vin); 
         //TODO make a channel read that doesn't write the channel at every call
     }
     else {
         printf( "\nFailure getting root access for I/O register mapping\n") ;
-        return EXIT_SUCESS;
+        return EXIT_SUCCESS;
     }
 
     //Init DAC on channel 0
@@ -27,7 +25,6 @@ int main(int argc, char *argv[]) {
 	printf("Welcome to the QNX Momentics IDE\n");
 
 	startThreads();
-	endThreads();
 
 	return EXIT_SUCCESS;
 }

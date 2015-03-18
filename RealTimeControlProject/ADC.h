@@ -25,36 +25,36 @@
 #define D_I_O_PORT_B (A_D_BASE_ADDRESS + 0x09)
 
 // make static as good programming practice (not in global symbol table)
-static uintptr_t a_d_command_handle ;
-static uintptr_t a_d_LSB_handle ;
-static uintptr_t a_d_MSB_handle ;
-static uintptr_t a_d_channel_handle ;
-static uintptr_t a_d_input_status_handle ;  // also used once for analog input gain setting
+uintptr_t a_d_command_handle ;
+uintptr_t a_d_LSB_handle ;
+uintptr_t a_d_MSB_handle ;
+uintptr_t a_d_channel_handle ;
+uintptr_t a_d_input_status_handle ;  // also used once for analog input gain setting
 
-static uintptr_t d_i_o_control_handle ;     // control register for ports A, B, and C
-static uintptr_t d_i_o_port_a_handle ;
-static uintptr_t d_i_o_port_b_handle ;
+uintptr_t d_i_o_control_handle ;     // control register for ports A, B, and C
+uintptr_t d_i_o_port_a_handle ;
+uintptr_t d_i_o_port_b_handle ;
 
 // analog output register handles
-static uintptr_t a_out_value_MSB_handle ;   // bits 0 - 3 are 4 MSB bits. Bits 6 & 7 are channel
-static uintptr_t a_out_value_LSB_handle ;   // write before write MSB
+uintptr_t a_out_value_MSB_handle ;   // bits 0 - 3 are 4 MSB bits. Bits 6 & 7 are channel
+uintptr_t a_out_value_LSB_handle ;   // write before write MSB
 
-static void SetSingleAtoDchannel( int channelNumber );
+void SetSingleAtoDchannel( int channelNumber );
 
-static short MeasureVoltageOnChannel( int channelNumber );
+short MeasureVoltageOnChannel( int channelNumber );
 
 //not really needed
-static void SetupDIO();
-static void TestPorts();
+void SetupDIO();
+void TestPorts();
 
 //set up the A to D
-static void SetupAtoD();
+void SetupAtoD();
 
 // need root access to memory map device modules
 int GetRootAccess();
 
 //Sets up DAC, for analog output
-static void SetupAout();
+void SetupAout();
 
 // For generating a specific analog output at specified channel
 void GenerateAout( int voltage, int output_channel );
