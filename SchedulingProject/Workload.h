@@ -6,6 +6,7 @@
 #define WORKLOAD_H_
 
 #include <time.h>
+#include <sys/dispatch.h>
 
 typedef enum {
   RATE_MONOTONIC,
@@ -14,13 +15,22 @@ typedef enum {
 } SCHED_ALG;
 
 typedef enum {
-  SCHED_START, //prompting scheduler to pick task
-  NOTHING_SCHED, //no task was scheduled
-  TASK_SCHED, //task was scheduled
-  TASK_EXEC_START, //task spin start
-  TASK_EXEC_END, //task spin end
-  START_TEST, //start of entire test
-  END_TEST //end of entire test
+  //prompting scheduler to pick task,
+  SCHED_START, // EVENT 0, info: sched_ctr
+  //no task was scheduled
+  NOTHING_SCHED, //EVENT 1, info: 0
+  //task was scheduled
+  TASK_SCHED, //EVENT 2, info: task id
+  //task spin start,
+  TASK_EXEC_START, //EVENT 3, info: task id
+  //task spin end
+  TASK_EXEC_END, //EVENT 4, info: task id
+  //start of entire test
+  START_TEST, //EVENT 5, info: 0
+  //end of entire test
+  END_TEST, //EVENT 6, info: 0
+  //deadline missed
+  DEADLINE_MISSED //EVENT 7, info: task id
 } EVENT_TYPE;
 
 typedef struct {
@@ -34,6 +44,7 @@ typedef struct {
 } Task;
 
 typedef struct {
+  unsigned int ch_id;
   unsigned int thread_id;
   unsigned int exec_time_us;
 } TaskArguments;
@@ -44,23 +55,21 @@ typedef struct {
 //TODO  TaskThread *threads;
 } Workload;
 
-
 typedef struct {
-  time_t exec_cycles;
+  long exec_time_us;
   int exec_number;
   int deadlines_missed;
 } TaskStats;
 
 typedef struct {
-  time_t start_cycles;
-  time_t end_cycles;
-  time_t idle_cycles;
-  time_t exec_cycles;
+  int start_time_ms;
+  int end_time_ms;
+  long idle_time_us;
+  long exec_time_us;
+  int exec_num;
+  int idle_num;
   int total_deadlines_missed;
   TaskStats ** task_stats;
 } Stats;
-
-
-
 
 #endif //Workload.h

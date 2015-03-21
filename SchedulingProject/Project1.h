@@ -3,8 +3,18 @@
 
 #include "Workload.h" //need for enum SCHED_ALG
 
-#define NS_CLOCK_SPEED 10000 //10us 
+#define NS_CLOCK_SPEED 100000 //10us
+#define FACTOR 1  //factor used for easy changing of task workload weights
+#define RUNTIME_TICKS 100
+#define RUNTIME (RUNTIME_TICKS*FACTOR)
+#define GETTIME_CONV 1000000L //scale gettime helper to ms
 
+//runs entire test for Algorithm and test set
+void SchedulerTest(const char * programName, SCHED_ALG alg,
+      unsigned int test[][3], int testSize);
+
+//TODO new time func
+long getTime();
 
 /**
  * \brief inits workload structure given some set of tasks and size 
@@ -20,8 +30,8 @@ int initStats(Workload* wl, Stats* stats);
  * \brief updates the stats structure. If taskId is -1 it updates
  * the idles time stats.
  */
-void updateStats( int taskId, Workload *wl, int startCycles,
-    int endCycles, Stats* stats);
+void updateStats( int taskId, Workload *wl, long startus,
+    long endus, Stats* stats);
 
 /**
  * \brief runs the actual test. Prompts the scheduler for tasks to run

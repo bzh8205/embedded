@@ -24,7 +24,7 @@ void initUserTracing( const char * programName);
 /*
  * \brief inserts a new user event
  */
-void userTraceEvent( int event_id,  const char * str );
+void userTraceEvent( int event_id, unsigned int info);
 
 
 

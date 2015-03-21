@@ -66,7 +66,7 @@ unsigned int LST (Workload* workload, clock_t curTime) {
 		if ( approxLastDeadline >= (workload->tasks[i])->last_finish_us) { //hadn't executed this period
 //printf("[%d]slack: %u, ND:%u LE:%u\n",i,calSlack,(workload->tasks[i])->next_deadline_us ,(workload->tasks[i])->last_finish_us);
 			//is the task ready to run though?
-			calSlack = ((clock_t)( workload->tasks[i])->next_deadline_us -curTime) - 
+			calSlack = ((clock_t)( workload->tasks[i])->next_deadline_us -curTime) -
 					(clock_t) (workload->tasks[i])->exec_time_us;
                 //printf("[%d] slack:(%lu-%lu)-%lu=%u\n",i, ( (clock_t)( workload->tasks[i])->next_deadline_us),curTime,
 		//	(clock_t) (workload->tasks[i])->exec_time_us, calSlack  );
@@ -80,6 +80,9 @@ unsigned int LST (Workload* workload, clock_t curTime) {
 				}
 			}
                 }
+        }
+	if (lSlack==-1) {
+                return -1;
         }
         return lT;
 }
@@ -102,10 +105,10 @@ unsigned int RMS (Workload* workload,clock_t curTime) {
                         //check if task is ready
 //printf("[%d] updated earliest\n",i);
                         approxLastDeadline= (workload->tasks[i])->next_deadline_us - (workload->tasks[i])->period_time_us;
-                        if ( approxLastDeadline >= (workload->tasks[i])->last_exec_us) { 
+                        if ( approxLastDeadline >= (workload->tasks[i])->last_exec_us) {
 				if(curTime > approxLastDeadline) { //if we are beyond the point of last deadline
 //printf("[%d] is ready. LD:%u LE:%u\n",i,approxLastDeadline,(workload->tasks[i])->last_exec_us);
-                        	//if deadline is earlier, then task hasn't ran this period 
+                        	//if deadline is earlier, then task hasn't ran this period
                                 shortest = (workload->tasks[i])->period_time_us;
                                 sT=(workload->tasks[i])->id;
 				}
@@ -123,7 +126,7 @@ unsigned int RMS (Workload* workload,clock_t curTime) {
                 return -1;
         }
         return sT;
-}	
+}
 
 
 /**

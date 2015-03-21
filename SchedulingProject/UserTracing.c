@@ -1,15 +1,16 @@
 #include <stdio.h>
+#include <string.h>
 #include <errno.h>
 #include <sys/trace.h>
 #include "UserTracing.h"
 
 
-
+int eventId;
 const char * _programName;
 
 //Don't know if this is actually needed.
 void initUserTracing( const char * programName ) {
-
+  eventId = 0;
   _programName = programName;
   /*
    * Just in case, turn off all filters, since we
@@ -36,6 +37,9 @@ void initUserTracing( const char * programName ) {
 
 }
 
-void userTraceEvent( int event_id,  const char * str ){
-  TRACE_EVENT( _programName, TraceEvent(_NTO_TRACE_INSERTUSRSTREVENT, event_id, str ));
+void userTraceEvent( int event_id, unsigned int info){
+  //trace_logi( event_id, info, eventId );
+  trace_logf(event_id,"info: %d num: %d",info,eventId);
+  eventId++;
+  //TRACE_EVENT( _programName, TraceEvent(_NTO_TRACE_INSERTUSRSTREVENT, event_id, str ));
 }
