@@ -15,6 +15,7 @@
 #include "GeneralUtils.h"
 #include "ThreadMsg.h"
 
+#ifndef A_Diff_EQ
 static float TARGET = 0;
 static float K_P = 0;
 static float K_I = 0;
@@ -37,6 +38,43 @@ float calculatePIDOutput(float pidInput){
   prevError = error;
   return result;
 }
+#else
+//from Analog input thread
+double SP;      //TODO set point,ANALOG input as AI1
+double MP;      // measured input, ANALOG input as AI0 (from ADC/DAC unit)
+//history for PID
+double u_kp1=0;   //storing current measurement calculated
+double u_k=0;     //previous measurement
+double e_kp1=0;   //current error
+double e_k=0;     // previous error
+double e_km1=0;   //error measurement before the previous
+//from user input thread
+static float K_P = 0;
+static float K_I = 0;
+static float K_D = 0;
+
+/**
+ * \brief Calculates the next output
+ * \brief from a provided road input, and the previous road input
+ * the wheel (and car) output is calulated to feed into the plant simulator 
+ */
+//TODO provide SP and MP as params from Analog input thread
+float calculatePIDOutput(float errorInput) {
+    double wheel;
+    e_kp1 = SP-MP;    // calculate error for this current instance
+    //calculate next step
+    u_kp1 = u_k + (K_P+K_I+K_D)*e_k_p1+ (K_P+2*K_D)*e_k+(K_D)*e_km1;
+    //store output
+    wheel = u_kp1;
+    //update variables for next calculation    
+    u_k = u_kp1;    //current output will be last 
+    e_km1 = e_k;    //error 2 calls ago will be from 1 call ago
+    e_k = e_kp1;    //current error will be last
+
+    return wheel; 
+}
+
+#endif
 
 //util variables
 unsigned char is_time_init;
