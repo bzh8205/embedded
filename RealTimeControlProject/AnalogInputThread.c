@@ -33,6 +33,10 @@ void AnalogInputThread(void *arguments) {
         //TODO read analog input
         message.value = MeasureVoltageOnChannel( 1 ); //digital reading from ADC on ch 1
         message.value =((float)message.value / AD_SCALE) * INPUT_RANGE; //convert to volts
+#ifdef A_Diff_EQ
+        message.sp = MeasureVoltageOnChannel( 8 ); //digital reading from ADC on ch 8
+        message.sp = ((float)message.sp / AD_SCALE) * INPUT_RANGE; //convert to volts
+#else
         MsgReply( rcvid, EOK, &message, sizeof(message) );
       } else {
         printf("AnalogInputThread %d exiting\n", threadId);

@@ -12,7 +12,10 @@ typedef struct {
   //should it exit?
   int exit;
   //data payload
-  double value;
+  double value;  //feed back of the plant output usually
+#ifdef A_Diff_EQ
+  double sp; // the user input that we want to reach
+#endif
 } ThreadMessage;
 
 

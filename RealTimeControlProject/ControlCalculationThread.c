@@ -40,8 +40,8 @@ float calculatePIDOutput(float pidInput){
 }
 #else
 //from Analog input thread
-double SP;      //TODO set point,ANALOG input as AI1
-double MP;      // measured input, ANALOG input as AI0 (from ADC/DAC unit)
+double SP;      //TODO set point,ANALOG input as AI8
+double MP;      // measured input, ANALOG input as AI1 (from ADC/DAC unit)
 //history for PID
 double u_kp1=0;   //storing current measurement calculated
 double u_k=0;     //previous measurement
@@ -59,8 +59,10 @@ static float K_D = 0;
  * the wheel (and car) output is calulated to feed into the plant simulator 
  */
 //TODO provide SP and MP as params from Analog input thread
-float calculatePIDOutput(float errorInput) {
+double calculatePIDOutput(double measuredPoint, double setPoint) {
     double wheel;
+    SP = setPoint;
+    MP = measuredPoint;
     e_kp1 = SP-MP;    // calculate error for this current instance
     //calculate next step
     u_kp1 = u_k + (K_P+K_I+K_D)*e_k_p1+ (K_P+2*K_D)*e_k+(K_D)*e_km1;
@@ -93,7 +95,11 @@ void ControlCalculationThread(void *arguments) {
     rcvid = MsgReceive(chid, &message, sizeof(message), NULL);
     if( message.exit != 1 ){
       //update z variables... this might not be a thing...
+#ifndef A_Diff_EQ
+      message.value = calculatePIDOutput(message.value,message.sp);
+#else
       message.value = calculatePIDOutput(message.value);
+#endif
       MsgReply( rcvid, EOK, &message, sizeof(message) );
     } else {
       printf("ControlCalculationThread %d exiting\n", threadId);
