@@ -18,6 +18,7 @@
 #include "ControlCalculationThread.h"
 #include "UserInputThread.h"
 #include "ThreadMsg.h"
+#include "LoggingUtility.h"
 
 static pthread_t* analogInputThread;
 static pthread_t* analogOutputThread;
@@ -74,6 +75,7 @@ int InitializeTimer(long nsfreq, int pulseid){
 }
 
 void startThreads(){
+  logEvent( RUN_START, 0 );
   struct _pulse pulse; //for timer
   int iter;
   int chid, pid; //for timer
@@ -109,12 +111,18 @@ void startThreads(){
 
     while( USER_IN_RUN_THREADS ){
       pid = MsgReceivePulse ( chid, &pulse, sizeof( pulse ), NULL );
+      logEvent( ANALOG_IN_START, 0 );
       reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Analog Input result: %f\n", msg.value);
+      logEvent( ANALOG_IN_END, 0 );
+      logEvent( CALC_START, 0 );
       reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Control Calculation result: %f\n", msg.value);
+      logEvent( CALC_END, 0 );
+      logEvent( ANALOG_OUT_START, 0 );
       reply_status = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Analog Output result: %f\n", msg.value);
+      logEvent( ANALOG_OUT_END, 0 );
     }
   }
 
@@ -138,6 +146,7 @@ void endThreads(){
   for( iter = 0 ; iter < NUM_THREADS ; iter++ ){
     ChannelDestroy(CHANNEL_IDS[iter]);
   }
+  logEvent( RUN_END, 0 );
 }
 
 

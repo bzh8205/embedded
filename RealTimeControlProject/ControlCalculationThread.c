@@ -14,6 +14,7 @@
 #include "ControlCalculationThread.h"
 #include "GeneralUtils.h"
 #include "ThreadMsg.h"
+#include "LoggingUtility.h"
 
 static float TARGET = 0;
 static float K_P = 0;
@@ -100,6 +101,9 @@ void setPIDConstants( float target, float Kp, float Ki, float Kd ){
   K_P = Kp;
   K_I = Ki;
   K_D = Kd;
+  logEvent( KP_SET, Kp );
+  logEvent( KI_SET, Ki );
+  logEvent( KD_SET, Kd );
 }
 
 pthread_t *initControlCalculationThread(int chid, int threadId) {
