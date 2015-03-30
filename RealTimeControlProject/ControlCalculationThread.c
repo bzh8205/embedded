@@ -14,6 +14,7 @@
 #include "ControlCalculationThread.h"
 #include "GeneralUtils.h"
 #include "ThreadMsg.h"
+#include "LoggingUtility.h"
 
 #ifndef A_Diff_EQ
 static float TARGET = 0;
@@ -25,14 +26,22 @@ static float integral = 0;
 static float error = 0;
 static float derivative = 0;
 static float dt = 0;
+static float prevdt = 0;
 
 float calculatePIDOutput(float pidInput){
   float result;
-  dt = (float)getTimeUs();
+  dt = (float)getTimeUs()/100000.0 - prevdt;
+  prevdt += dt;
+  printf("Dt: %f\n", dt);
   error = TARGET - pidInput;
+  //logEvent(PID_ERROR, error);
+  printf("PID error: %f\n", error);
   integral = integral + error * dt;
+  printf("Integral: %f\n", integral);
   if( dt != 0 ) {
     derivative = (error - prevError)/dt;
+    printf("Derivative: %f\n", derivative);
+
   }
   result = K_P*error + K_I*integral + K_D*derivative;
   prevError = error;
@@ -144,6 +153,9 @@ void setPIDConstants( float target, float Kp, float Ki, float Kd ){
   K_P = Kp;
   K_I = Ki;
   K_D = Kd;
+  logEvent( KP_SET, Kp );
+  logEvent( KI_SET, Ki );
+  logEvent( KD_SET, Kd );
 }
 
 pthread_t *initControlCalculationThread(int chid, int threadId) {

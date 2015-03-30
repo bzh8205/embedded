@@ -21,7 +21,7 @@ void UserInputThread(void *arguments) {
   int threadId = args->thread_id;
   printf("UserInputThread %d created\n", threadId);
 
-  printf("Enter \"Target Kp Ki Kd\" target and PID constants separated by spaces (i.e.) \"5.0 2.0 3.5 1.2\".\n");
+  printf("Enter \"Setpoint Kp Ki Kd\" setpoint and PID constants separated by spaces (i.e.) \"5.0 2.0 3.5 1.2\".\n");
   printf("Press only enter to exit\n");
 
   float target;
@@ -45,12 +45,12 @@ void UserInputThread(void *arguments) {
 
 void getPIDInput( float *target, float *Kp, float *Ki, float *Kd){
   int scan;
-  printf("Target Kp Ki Kd: ");
+  printf("Setpoint Kp Ki Kd: \n");
   scan = scanf("%f %f %f %f", target, Kp, Ki, Kd);
   printf("\n");
   if( scan == 4 ) {
     setPIDConstants(*target, *Kp, *Ki, *Kd);
-    printf("UserInputThread: Target and PID constants set.\n");
+    printf("UserInputThread: Setpoint and PID constants set.\n");
     USER_IN_RUN_THREADS = 1;
   } else if ( scan == EOF ){
     USER_IN_RUN_THREADS = -1;
