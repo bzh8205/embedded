@@ -62,7 +62,7 @@ void initUserTracing( const char * programName ) {
 void logEvent(EVENT_TYPE et, int info) {
   trace_logf((int)et,"info: %d num: %d",info,eventId);
 #ifdef CONSOLE_PRINT
-  printf("USER EVENT: {name:%s,info:%d,eventId:%d}", eventNames[(int)et], info, eventId);
+  printf("USER EVENT: {name:%s,info:%d,eventId:%d}\n", eventNames[(int)et], info, eventId);
 #endif
   eventId++;
 }
