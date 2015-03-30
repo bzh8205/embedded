@@ -80,13 +80,13 @@ void startThreads(){
   int iter;
   int chid, pid; //for timer
   //threads need channels to receive messages
-  printf("Creating channels\n");
+  printf("Thread Runner: Creating channels\n");
   for( iter = 0 ; iter < NUM_THREADS ; iter++ ){
     CHANNEL_IDS[iter] = ChannelCreate (0);
   }
 
   //we need connections to send messages to threads
-  printf("Creating connections\n");
+  printf("Thread Runner: Creating connections\n");
   for( iter = 0 ; iter < NUM_THREADS ; iter++ ){
     CONNECTION_IDS[iter] = ConnectAttach(ND_LOCAL_NODE, 0, CHANNEL_IDS[iter], THREAD_IDS[iter], 0);
   }
@@ -94,10 +94,11 @@ void startThreads(){
   //create the threads and pass them their channel for messages
   analogInputThread = initAnalogInputThread( CHANNEL_IDS[A_IN_THREAD_ID], A_IN_THREAD_ID);
   analogOutputThread = initAnalogOutputThread( CHANNEL_IDS[A_OUT_THREAD_ID], A_OUT_THREAD_ID);
-  userInputThread = initUserInputThread( CHANNEL_IDS[U_IN_THREAD_ID], U_IN_THREAD_ID);
   controlCalcThread = initControlCalculationThread( CHANNEL_IDS[CONTROL_THREAD_ID], CONTROL_THREAD_ID);
 
+  //create user input last
   printf("Thread Runner: waiting for user input to start.\n");
+  userInputThread = initUserInputThread( CHANNEL_IDS[U_IN_THREAD_ID], U_IN_THREAD_ID);
   while( USER_IN_RUN_THREADS == 0 ){ }
 
   if( USER_IN_RUN_THREADS == 1 ) {
@@ -113,13 +114,13 @@ void startThreads(){
       pid = MsgReceivePulse ( chid, &pulse, sizeof( pulse ), NULL );
       logEvent( PULSE_RECV, 0 );
       reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-      printf("Analog Input result: %f\n", msg.value);
+      //printf("Analog Input result: %f\n", msg.value);
       logEvent( ANALOG_IN_RESULT, msg.value);
       reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-      printf("Control Calculation result: %f\n", msg.value);
+      //printf("Control Calculation result: %f\n", msg.value);
       logEvent( CALC_RESULT, msg.value);
       reply_status = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
-      printf("Analog Output result: %f\n", msg.value);
+      //printf("Analog Output result: %f\n", msg.value);
       logEvent( ANALOG_OUT_END, 0 );
     }
   }
@@ -131,7 +132,7 @@ void startThreads(){
 }
 
 void endThreads(){
-  printf("Ending threads\n");
+  printf("Thread Runner: Ending threads\n");
   //this will tell each thread that it needs to exit
   ThreadMessage msg = { 1 , 0 };
   int replyStatus;
@@ -140,7 +141,7 @@ void endThreads(){
   replyStatus = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
 
   int iter;
-  printf("Destroying channels\n");
+  printf("Thread Runner: Destroying channels\n");
   for( iter = 0 ; iter < NUM_THREADS ; iter++ ){
     ChannelDestroy(CHANNEL_IDS[iter]);
   }
