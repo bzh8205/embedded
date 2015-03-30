@@ -16,7 +16,7 @@
 
 int eventId;
 const char * _programName;
-const char *eventNames[11];
+const char *eventNames[10];
 
 //Don't know if this is actually needed.
 void initUserTracing( const char * programName ) {
@@ -28,12 +28,11 @@ void initUserTracing( const char * programName ) {
   eventNames[2] = "KP_SET";
   eventNames[3] = "KI_SET";
   eventNames[4] = "KD_SET";
-  eventNames[5] = "ANALOG_IN_START";
-  eventNames[6] = "ANALOG_IN_END";
-  eventNames[7] = "CALC_START";
-  eventNames[8] = "CALC_END";
-  eventNames[9] = "ANALOG_OUT_START";
-  eventNames[10] = "ANALOG_OUT_END";
+  eventNames[5] = "PULSE_RECV";
+  eventNames[6] = "ANALOG_IN_RESULT";
+  eventNames[7] = "CALC_RESULT";
+  eventNames[8] = "ANALOG_OUT_END";
+  eventNames[9] = "PID_ERROR";
 #endif
   /*
    * Just in case, turn off all filters, since we

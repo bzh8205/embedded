@@ -30,6 +30,7 @@ float calculatePIDOutput(float pidInput){
   float result;
   dt = (float)getTimeUs();
   error = TARGET - pidInput;
+  logEvent(PID_ERROR, error);
   integral = integral + error * dt;
   if( dt != 0 ) {
     derivative = (error - prevError)/dt;

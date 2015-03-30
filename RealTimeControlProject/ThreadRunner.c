@@ -111,15 +111,13 @@ void startThreads(){
 
     while( USER_IN_RUN_THREADS ){
       pid = MsgReceivePulse ( chid, &pulse, sizeof( pulse ), NULL );
-      logEvent( ANALOG_IN_START, 0 );
+      logEvent( PULSE_RECV, 0 );
       reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Analog Input result: %f\n", msg.value);
-      logEvent( ANALOG_IN_END, 0 );
-      logEvent( CALC_START, 0 );
+      logEvent( ANALOG_IN_RESULT, msg.value);
       reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Control Calculation result: %f\n", msg.value);
-      logEvent( CALC_END, 0 );
-      logEvent( ANALOG_OUT_START, 0 );
+      logEvent( CALC_RESULT, msg.value);
       reply_status = MsgSend(CONNECTION_IDS[A_OUT_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Analog Output result: %f\n", msg.value);
       logEvent( ANALOG_OUT_END, 0 );
