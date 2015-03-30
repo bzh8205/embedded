@@ -3,6 +3,7 @@
 
 #include "ADC.h"
 #include "ThreadRunner.h"
+#include "LoggingUtility.h"
 
 int main(int argc, char *argv[]) {
     short vin;
@@ -23,7 +24,7 @@ int main(int argc, char *argv[]) {
     //Init DAC on channel 0
 
 	printf("Welcome to the QNX Momentics IDE\n");
-
+	initUserTracing( argv[0] );
 	startThreads();
 
 	return EXIT_SUCCESS;
