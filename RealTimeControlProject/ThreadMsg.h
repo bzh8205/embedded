@@ -8,6 +8,8 @@
 #ifndef THREADMSG_H_
 #define THREADMSG_H_
 
+#define A_Diff_EQ //TODO if using diff equation from transfer funct
+
 typedef struct {
   //should it exit?
   int exit;

@@ -16,6 +16,8 @@
 #include "ThreadMsg.h"
 #include "ADC.h"    //for adc mapping and reading
 
+#define A_Diff_EQ //TODO if using diff equation from transfer funct
+
 void AnalogInputThread(void *arguments) {
   int rcvid;
   ThreadMessage message;
@@ -31,10 +33,10 @@ void AnalogInputThread(void *arguments) {
       rcvid = MsgReceive(chid, &message, sizeof(message), NULL);
       if( message.exit != 1 ){
         //TODO read analog input
-        message.value = MeasureVoltageOnChannel( 1 ); //digital reading from ADC on ch 1
+        message.value = MeasureVoltageOnChannel( FEEDBACK ); //digital reading from ADC on ch 1
         message.value =((float)message.value / AD_SCALE) * INPUT_RANGE; //convert to volts
 #ifdef A_Diff_EQ
-        message.sp = MeasureVoltageOnChannel( 8 ); //digital reading from ADC on ch 8
+        message.sp = MeasureVoltageOnChannel( SET_POINT ); //digital reading from ADC on ch 8
         message.sp = ((float)message.sp / AD_SCALE) * INPUT_RANGE; //convert to volts
 #else
         MsgReply( rcvid, EOK, &message, sizeof(message) );

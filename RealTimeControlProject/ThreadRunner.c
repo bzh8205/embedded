@@ -20,6 +20,8 @@
 #include "ThreadMsg.h"
 #include "LoggingUtility.h"
 
+#define A_Diff_EQ //TODO if using diff equation from transfer funct
+
 static pthread_t* analogInputThread;
 static pthread_t* analogOutputThread;
 static pthread_t* userInputThread;
@@ -115,6 +117,9 @@ void startThreads(){
       logEvent( PULSE_RECV, 0 );
       reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Analog Input result: %f\n", msg.value);
+#ifdef A_Diff_EQ 
+      printf("Analog Input result SP: %f\n",msg.sp);
+#endif
       //logEvent( ANALOG_IN_RESULT, msg.value);
       reply_status = MsgSend(CONNECTION_IDS[CONTROL_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
       printf("Control Calculation result: %f\n", msg.value);

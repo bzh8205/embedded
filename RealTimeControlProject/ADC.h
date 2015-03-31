@@ -21,6 +21,10 @@
 //ADC input conversion
 #define AD_SCALE    (32768)
 #define INPUT_RANGE (10)
+//ADC and DAC channels used
+#define SET_POINT   (8)
+#define FEEDBACK    (1)
+#define PID_OUT     (0)
 
 #define D_I_O_PORT_LENGTH (1)
 #define D_I_O_CONTROL_REGISTER (A_D_BASE_ADDRESS + 0x0b)

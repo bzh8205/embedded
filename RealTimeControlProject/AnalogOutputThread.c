@@ -34,7 +34,7 @@ void AnalogOutputThread(void *arguments) {
       if( message.exit != 1 ){
         //Write analog output
         if ( (message.value >=-10) & (message.value <= 10) ) { 
-          GenerateAout (message.value,0); //output received value to ch 0
+          GenerateAout (message.value,PID_OUT); //output received value to ch 0
         } else {
             printf("AnalogOutputThread:: %fV is not a ranged value, no output\n",message.value);
         }

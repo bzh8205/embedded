@@ -16,6 +16,8 @@
 #include "ThreadMsg.h"
 #include "LoggingUtility.h"
 
+#define A_Diff_EQ //TODO if using diff equation from transfer funct
+
 #ifndef A_Diff_EQ
 static float TARGET = 0;
 static float K_P = 0;
@@ -48,6 +50,7 @@ float calculatePIDOutput(float pidInput){
   return result;
 }
 #else
+static float TARGET =0; //TODO not used in this instance SP is read in on AI8
 //from Analog input thread
 double SP;      //TODO set point,ANALOG input as AI8
 double MP;      // measured input, ANALOG input as AI1 (from ADC/DAC unit)
@@ -74,7 +77,7 @@ double calculatePIDOutput(double measuredPoint, double setPoint) {
     MP = measuredPoint;
     e_kp1 = SP-MP;    // calculate error for this current instance
     //calculate next step
-    u_kp1 = u_k + (K_P+K_I+K_D)*e_k_p1+ (K_P+2*K_D)*e_k+(K_D)*e_km1;
+    u_kp1 = u_k + (K_P+K_I+K_D)*e_kp1+ (K_P+2*K_D)*e_k+(K_D)*e_km1;
     //store output
     wheel = u_kp1;
     //update variables for next calculation    
@@ -104,7 +107,7 @@ void ControlCalculationThread(void *arguments) {
     rcvid = MsgReceive(chid, &message, sizeof(message), NULL);
     if( message.exit != 1 ){
       //update z variables... this might not be a thing...
-#ifndef A_Diff_EQ
+#ifdef A_Diff_EQ
       message.value = calculatePIDOutput(message.value,message.sp);
 #else
       message.value = calculatePIDOutput(message.value);
