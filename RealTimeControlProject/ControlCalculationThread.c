@@ -25,12 +25,13 @@ static float integral = 0;
 static float error = 0;
 static float derivative = 0;
 static float dt = 0;
-static float prevdt = 0;
+static float curtime = 0;
+static float prevtime = 0;
 
 float calculatePIDOutput(float pidInput){
   float result;
-  dt = (float)getTimeUs()/100000.0 - prevdt;
-  prevdt += dt;
+  curtime = (float)getTimeUs()/100000.0;
+  dt = (curtime - prevtime);
   printf("Dt: %f\n", dt);
   error = TARGET - pidInput;
   //logEvent(PID_ERROR, error);
@@ -44,6 +45,7 @@ float calculatePIDOutput(float pidInput){
   }
   result = K_P*error + K_I*integral + K_D*derivative;
   prevError = error;
+  prevtime = curtime;
   return result;
 }
 
