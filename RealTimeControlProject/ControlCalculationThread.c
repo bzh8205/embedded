@@ -45,10 +45,11 @@ float calculatePIDOutput(float pidInput){
     //printf("Derivative: %f\n", derivative);
 
   }
-#ifdef CALC_DEBUG
-  printf("Target %f Input %f Error %f Dt %f I %f D %f\n", TARGET, pidInput, error, dt, integral, derivative);
-#endif
+
   result = K_P*error + K_I*integral + K_D*derivative;
+#ifdef CALC_DEBUG
+  printf("Target %f Input %f Error %f Dt %f I %f D %f O %f\n", TARGET, pidInput, error, dt, integral, derivative, result);
+#endif
   prevError = error;
   prevtime = curtime;
   return result;
