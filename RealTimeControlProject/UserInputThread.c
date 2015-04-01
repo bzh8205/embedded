@@ -52,7 +52,7 @@ void getPIDInput( float *target, float *Kp, float *Ki, float *Kd){
     setPIDConstants(*target, *Kp, *Ki, *Kd);
     printf("UserInputThread: Setpoint and PID constants set.\n");
     USER_IN_RUN_THREADS = 1;
-  } else if ( scan == EOF ){
+  } else if ( scan == 0 ){
     USER_IN_RUN_THREADS = -1;
   } else {
     printf("UserInputThread: Invalid input, please enter 4 numbers separated by spaces (i.e.) \"5.0 2.0 3.5 1.2\".\n");

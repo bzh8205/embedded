@@ -19,7 +19,8 @@ typedef enum {
   ANALOG_IN_RESULT, //EVENT 6
   CALC_RESULT, //EVENT 7
   ANALOG_OUT_END, //EVENT 8
-  PID_ERROR //EVENT 9
+  PID_ERROR, //EVENT 9
+  TARGET_SET //EVENT 10
 /*  ANALOG_IN_START, //EVENT 5
   ANALOG_IN_END, //EVENT 6
   CALC_START, //EVENT 7
@@ -47,6 +48,6 @@ if((int)((trace_event))==(-1)) \
  */
 void initUserTracing( const char * programName);
 
-void logEvent(EVENT_TYPE et, int info);
+void logEvent(EVENT_TYPE et, float info);
 
 #endif /* LOGGINGUTILITY_H_ */

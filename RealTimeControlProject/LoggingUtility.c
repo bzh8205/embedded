@@ -12,11 +12,11 @@
 #include <sys/trace.h>
 #include "LoggingUtility.h"
 
-#define CONSOLE_PRINT
+//#define CONSOLE_PRINT
 
 int eventId;
 const char * _programName;
-const char *eventNames[10];
+const char *eventNames[11];
 
 //Don't know if this is actually needed.
 void initUserTracing( const char * programName ) {
@@ -33,6 +33,7 @@ void initUserTracing( const char * programName ) {
   eventNames[7] = "CALC_RESULT";
   eventNames[8] = "ANALOG_OUT_END";
   eventNames[9] = "PID_ERROR";
+  eventNames[10] = "SETPOINT_SET";
 #endif
   /*
    * Just in case, turn off all filters, since we
@@ -58,10 +59,10 @@ void initUserTracing( const char * programName ) {
   TRACE_EVENT(_programName, TraceEvent(_NTO_TRACE_START));
 }
 
-void logEvent(EVENT_TYPE et, int info) {
-  trace_logf((int)et,"info: %d num: %d",info,eventId);
+void logEvent(EVENT_TYPE et, float info) {
+  trace_logf((int)et,"info: %f num: %d",info,eventId);
 #ifdef CONSOLE_PRINT
-  printf("%s(event #%d): %d\n", eventNames[(int)et], eventId, info);
+  printf("%s(event #%d): %f\n", eventNames[(int)et], eventId, info);
 #endif
   eventId++;
 }

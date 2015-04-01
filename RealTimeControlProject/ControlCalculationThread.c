@@ -16,6 +16,8 @@
 #include "ThreadMsg.h"
 #include "LoggingUtility.h"
 
+//#define CALC_DEBUG
+
 static float TARGET = 0;
 static float K_P = 0;
 static float K_I = 0;
@@ -32,17 +34,20 @@ float calculatePIDOutput(float pidInput){
   float result;
   curtime = (float)getTimeUs()/100000.0;
   dt = (curtime - prevtime);
-  printf("Dt: %f\n", dt);
+  //printf("Dt: %f\n", dt);
   error = TARGET - pidInput;
-  //logEvent(PID_ERROR, error);
-  printf("PID error: %f\n", error);
+  logEvent(PID_ERROR, error);
+  //printf("PID error: %f\n", error);
   integral = integral + error * dt;
-  printf("Integral: %f\n", integral);
+  //printf("Integral: %f\n", integral);
   if( dt != 0 ) {
     derivative = (error - prevError)/dt;
-    printf("Derivative: %f\n", derivative);
+    //printf("Derivative: %f\n", derivative);
 
   }
+#ifdef CALC_DEBUG
+  printf("Target %f Input %f Error %f Dt %f I %f D %f\n", TARGET, pidInput, error, dt, integral, derivative);
+#endif
   result = K_P*error + K_I*integral + K_D*derivative;
   prevError = error;
   prevtime = curtime;
@@ -111,6 +116,7 @@ void setPIDConstants( float target, float Kp, float Ki, float Kd ){
   K_P = Kp;
   K_I = Ki;
   K_D = Kd;
+  logEvent( TARGET_SET, target);
   logEvent( KP_SET, Kp );
   logEvent( KI_SET, Ki );
   logEvent( KD_SET, Kd );

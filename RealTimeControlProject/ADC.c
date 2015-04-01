@@ -137,7 +137,7 @@ void GenerateAout( double voltage, int output_channel )
     lsb_value = msb_and_lsb & 0xff ;            // just get the low byte
     msb_and_channel = msb_and_lsb >> 8 ;        // just get the top 4 bits
     msb_and_channel |= ( output_channel << 6 ) ;    // move channel to the top two bits.
-    printf( "MSB %02x  LSB %02x   ", msb_and_channel, lsb_value ) ;
+    //printf( "MSB %02x  LSB %02x   ", msb_and_channel, lsb_value ) ;
     out8( a_out_value_LSB_handle, lsb_value ) ;
     out8( a_out_value_MSB_handle, msb_and_channel ) ;
 }
