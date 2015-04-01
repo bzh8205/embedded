@@ -16,7 +16,7 @@
 #include "ThreadMsg.h"
 #include "LoggingUtility.h"
 
-//#define CALC_DEBUG
+#define CALC_DEBUG
 
 static float TARGET = 0;
 static float K_P = 0;
@@ -27,13 +27,13 @@ static float integral = 0;
 static float error = 0;
 static float derivative = 0;
 static float dt = 0;
-static float curtime = 0;
-static float prevtime = 0;
+static long curtime = 0;
+static long prevtime = 0;
 
 float calculatePIDOutput(float pidInput){
   float result;
-  curtime = (float)getTimeUs()/100000.0;
-  dt = (curtime - prevtime);
+  curtime = getTimeUs();
+  dt = (curtime - prevtime)/100000.0;
   //printf("Dt: %f\n", dt);
   error = TARGET - pidInput;
   logEvent(PID_ERROR, error);

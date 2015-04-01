@@ -104,7 +104,7 @@ void startThreads(){
   if( USER_IN_RUN_THREADS == 1 ) {
 
     printf("Thread Runner: starting PID loop.\n");
-    chid = InitializeTimer(1000000, 1); //set timer to 10hz or 100ms
+    chid = InitializeTimer(100000000, 1); //set timer to 10hz or 100ms
 
     //Tests messaging chain
     ThreadMessage msg = { 0 , 0 };
