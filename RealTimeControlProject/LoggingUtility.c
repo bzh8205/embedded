@@ -60,7 +60,7 @@ void initUserTracing( const char * programName ) {
 }
 
 void logEvent(EVENT_TYPE et, float info) {
-  trace_logf((int)et,"info: %f num: %d",info,eventId);
+  trace_logf((int)et,"%s: %f num: %d",eventNames[(int)et],info,eventId);
 #ifdef CONSOLE_PRINT
   printf("%s(event #%d): %f\n", eventNames[(int)et], eventId, info);
 #endif
