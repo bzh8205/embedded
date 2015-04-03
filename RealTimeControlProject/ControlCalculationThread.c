@@ -113,6 +113,9 @@ long getTimeUs(){
 }
 
 void setPIDConstants( float target, float Kp, float Ki, float Kd ){
+#ifdef CALC_DEBUG
+  printf("constants: t %f, p %f, i %f, d %f\n", target, Kp, Ki, Kd);
+#endif
   TARGET = target;
   K_P = Kp;
   K_I = Ki;

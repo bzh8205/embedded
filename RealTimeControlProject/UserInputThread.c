@@ -22,7 +22,7 @@ void UserInputThread(void *arguments) {
   printf("UserInputThread %d created\n", threadId);
 
   printf("Enter \"Setpoint Kp Ki Kd\" setpoint and PID constants separated by spaces (i.e.) \"5.0 2.0 3.5 1.2\".\n");
-  printf("Press only enter to exit\n");
+  printf("Enter x to exit\n");
 
   float target;
   float Kp;

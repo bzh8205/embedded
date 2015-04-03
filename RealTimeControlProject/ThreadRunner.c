@@ -110,7 +110,7 @@ void startThreads(){
     ThreadMessage msg = { 0 , 0 };
     int reply_status;
 
-    while( USER_IN_RUN_THREADS ){
+    while( USER_IN_RUN_THREADS != -1){
       pid = MsgReceivePulse ( chid, &pulse, sizeof( pulse ), NULL );
       logEvent( PULSE_RECV, 0 );
       reply_status = MsgSend(CONNECTION_IDS[A_IN_THREAD_ID], &msg, sizeof(msg), &msg, sizeof(msg));
